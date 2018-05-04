@@ -1,0 +1,96 @@
+---
+output: 
+  html_document
+---
+# 時系列分析
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(AER)
+data("USMacroSW")
+str(USMacroSW)
+usm <- as.data.frame(USMacroSW) %>% 
+  mutate(infl = 4 * 100 * (log(cpi) - log(lag(cpi)))) %>% 
+  ts(start = c(1957,1), frequency = 4) %>% as.zoo()
+head(usm, 20)
+```
+
+
+```{r}
+# fm_ar1 <- dynlm(d(infl) ~ L(d(infl)),
+#                 data = usm, start = c(1962,1), end = c(2004,4))
+fm_ar1 <- dynlm(d(infl) ~ L(d(infl)),
+                data = usm, start = c(1962,1), end = c(2004,4))
+
+coeftest(fm_ar1, vcov = sandwich)
+```
+
+
+```{r}
+require(tidyr)
+require(stringr)
+test <- usm %>% as.data.frame() %>% 
+  mutate(time = index(usm)) %>%
+  separate(time, sep = " ", into = c("year","quater")) %>% 
+  mutate(quater = str_replace_all(quater, "Q", ""))
+test %>% mutate(dinfl = infl - lag(infl),
+                dinfl1 = lag(dinfl)) %>% 
+  filter(year >= 1962 & year <= 2004) %>%
+  lm(dinfl~dinfl1, data = .) %>% coeftest()
+```
+
+
+
+```{r}
+## Equation 14.7, p. 536
+fm_ar1 <- dynlm(d(infl) ~ L(d(infl)),
+                data = usm, start = c(1962,1), end = c(2004,4))
+coeftest(fm_ar1, vcov = sandwich)
+
+## Equation 14.13, p. 538
+fm_ar4 <- dynlm(d(infl) ~ L(d(infl), 1:4), 
+                data = usm, start = c(1962,1), end = c(2004,4))
+coeftest(fm_ar4, vcov = sandwich)
+
+## Equation 14.16, p. 542
+fm_adl41 <- dynlm(d(infl) ~ L(d(infl), 1:4) + L(unemp),
+                  data = usm, start = c(1962,1), end = c(2004,4))
+coeftest(fm_adl41, vcov = sandwich)
+
+## Equation 14.17, p. 542
+fm_adl44 <- dynlm(d(infl) ~ L(d(infl), 1:4) + L(unemp, 1:4),
+                  data = usm, start = c(1962,1), end = c(2004,4))
+coeftest(fm_adl44, vcov = sandwich)
+
+## Granger causality test mentioned on p. 547
+waldtest(fm_ar4, fm_adl44, vcov = sandwich)  
+```
+
+```{r}
+library(AER)
+data("PepperPrice")
+```
+
+```{r}
+library(tseries)
+adf.test(PepperPrice[,"white"])
+```
+
+```{r}
+PepperPrice[,"white"] %>% log() %>% diff() %>% adf.test()
+```
+
+
+```{r}
+usm <- USMacroSW[,"cpi"] %>% 
+  log() %>% 400 * diff() %>% ts.intersect("infl" = .,USMacroSW)
+colnames(usm) <- c("infl",colnames(USMacroSW))
+```
+
+
+```{r}
+data("FrozenJuice")
+```
+
