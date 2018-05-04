@@ -1,0 +1,266 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+# ml
+```{r include=FALSE}
+rm(list = ls())
+library(knitr)
+opts_chunk$set(echo = TRUE,error = FALSE,warning = FALSE,collapse = TRUE,cache = TRUE,cache.extra = rand_seed, autodep = TRUE)
+library(AER)
+library(mosaic)
+library(latticeExtra)
+library(stargazer)
+set.seed(2000)
+```
+
+## logit
+### 数値計算
+```{r}
+N<-100
+x <- rnorm(N,1,2)
+ystar <- -1+ x + rlogis(N)
+y <- ifelse(ystar >= 0,1,0)
+df <- data.frame(x,y,ystar)
+```
+
+```{r}
+fm_logit <- glm(y ~ x, data = df, family = binomial)
+summary(fm_logit)
+```
+
+```{r}
+fn_logit <- makeFun(fm_logit)
+xyplot(y~x,data =df)
+plotFun(fn_logit, add = TRUE)
+```
+
+### 実証分析
+```{r}
+data("SwissLabor", package = "AER")
+inspect(SwissLabor)
+```
+
+ロジットモデルで推計する.
+
+```{r}
+swiss_logit <- glm(participation ~ . + I(age^2),
+                   data = SwissLabor, family = binomial)
+summary(swiss_logit)
+```
+
+### 予測
+```{r}
+predict(swiss_logit,type="response",
+        newdata=data.frame(income=10,age=4,education=9,
+                           youngkids=2,oldkids=5,foreign="no"))
+```
+
+パッケージ `mosaic` を用いれば簡単に計算できる.
+```{r}
+fn_logit<-makeFun(swiss_logit)
+fn_logit(income=10,age=4,education=9,
+         youngkids=2,oldkids=5,foreign="no")
+```
+
+
+### 擬決定係数
+擬決定係数は次のように計算する.
+```{r}
+swiss_logit0 <- update(swiss_logit, formula = . ~ 1)
+1 - as.vector(logLik(swiss_logit)/logLik(swiss_logit0))
+```
+
+### 限界効果
+MEM (marginal effect at mean) をもとめるには以下のようにすればよい.
+```{r}
+dlogis(mean(predict(swiss_logit,type="link"))) * swiss_logit$coef[-1]
+```
+
+AME (Average marginal effect)の計算は以下のように実行する.
+```{r}
+mean(dlogis(predict(swiss_logit,type="link"))) * swiss_logit$coef[-1]
+```
+
+
+### 限界効果 (mfx)
+mfx というパッケージをもちいれば, MEM は 簡単に計算できる.
+```{r}
+library(mfx)
+logitmfx(swiss_logit, SwissLabor)
+```
+
+AME (Average marginal effect) も同様である.
+```{r}
+logitmfx(swiss_logit, SwissLabor, atmean=FALSE)
+```
+
+## probit
+
+### 数値計算
+```{r}
+N<-100
+x <- rnorm(N,1,2)
+ystar <- -1+ x + rnorm(N)
+y <- ifelse(ystar>= 0,1,0)
+df <- data.frame(x,y,ystar)
+```
+
+```{r}
+head(df)
+```
+
+```{r}
+fm_probit <- glm(y ~ x, data = df, family = binomial)
+summary(fm_probit)
+```
+
+```{r}
+fn_probit <- makeFun(fm_probit)
+xyplot(y~x,data =df)
+plotFun(fn_probit, add = TRUE)
+```
+
+### 実証分析
+プロビットモデルを推計する.
+```{r}
+swiss_probit <- glm(participation ~ . + I(age^2),
+  data = SwissLabor, family = binomial(link = "probit"))
+summary(swiss_probit)
+```
+
+### 予測
+```{r}
+predict(swiss_probit,type="response",
+        newdata=data.frame(income=10,age=4,education=9,
+                           youngkids=2,oldkids=5,foreign="no"))
+```
+
+パッケージ `mosaic` を用いれば簡単に計算できる.
+```{r}
+library(mosaic)
+fn_probit<-makeFun(swiss_probit)
+fn_probit(income=10,age=4,education=9,
+          youngkids=2,oldkids=5,foreign="no")
+```
+
+### 擬決定係数
+擬決定係数は以下のように推計する.
+```{r}
+swiss_probit0 <- update(swiss_probit, formula = . ~ 1)
+1 - as.vector(logLik(swiss_probit)/logLik(swiss_probit0))
+```
+
+
+### 限界効果
+MEM (marginal effect at mean) をもとめるには以下のようにすればよい.
+```{r}
+mean(predict(swiss_probit,type="link")) * swiss_probit$coef[-1]
+```
+
+AME (average marginal effect) の計算は以下のように実行する.
+```{r}
+mean(dnorm(predict(swiss_probit,type="link"))) * swiss_probit$coef[-1]
+```
+
+### 限界効果 (mfx)
+mfx というパッケージをもちいれば, MEM は簡単に計算できる.
+```{r}
+library(mfx)
+probitmfx(swiss_probit, SwissLabor)
+```
+
+AME も同様である.
+```{r}
+probitmfx(swiss_probit, SwissLabor, atmean=FALSE)
+```
+
+
+## tobit
+### 数値計算
+```{r}
+N<-100
+x <- rnorm(N,1,2)
+ystar <- -1+ x + rnorm(N)
+y <- ifelse(ystar>= 0,ystar,0)
+df <- data.frame(x,y,ystar)
+```
+
+```{r}
+head(df)
+```
+
+
+```{r}
+xyplot(ystar~x, data =df) + 
+  xyplot(y~x, data =df, col = 2, add = TRUE)
+```
+
+```{r}
+fm1 <- lm(y~x, data = df)
+summary(fm1)
+```
+
+```{r}
+fm2 <- tobit(y~x, data = df)
+summary(fm2)
+```
+
+```{r}
+xyplot(ystar~x, data =df) + 
+  xyplot(y~x, data =df, col = "red", add = TRUE)
+fn1 <- makeFun(fm1)
+plotFun(fn1, add = TRUE)
+fn2 <- makeFun(ifelse(a+b*x>=0,a+b*x,0) ~ x, 
+               a = coef(fm2)[1], b=coef(fm2)[2])
+plotFun(fn2, add = TRUE, col = "red")
+```
+
+
+###実証分析
+```{r}
+data("Affairs")
+fm.tobit <- tobit(affairs ~ age + children + yearsmarried + religiousness + occupation + rating, data = Affairs)
+summary(fm.tobit)
+```
+
+### 予測
+```{r}
+fn_tobit <- makeFun(b0 + b1*age + b2*children + b3*yearsmarried +
+                      b4* religiousness+ b5*occupation + b6* rating ~
+                      age&children&yearsmarried&religiousness&occupation&rating,
+                    b0 = coef(fm.tobit)[1], b1 = coef(fm.tobit)[2], 
+                    b2 = coef(fm.tobit)[3], b3 = coef(fm.tobit)[4],
+                    b4 = coef(fm.tobit)[5], b5 = coef(fm.tobit)[6], 
+                    b6 = coef(fm.tobit)[7])
+fn_tobit2 <- makeFun(ifelse(
+  fn_tobit(age,children,yearsmarried,religiousness,occupation,rating)>0,
+  fn_tobit(age,children,yearsmarried,religiousness,occupation,rating),0) ~
+    age&children&yearsmarried&religiousness&occupation&rating)
+fn_tobit2(age = 30, children = 5, yearsmarried = 20,
+          religiousness = 1, occupation = 3, rating = 4)
+```
+
+
+### 擬決定係数
+擬決定係数は以下のように推計する.
+```{r}
+fm.tobit0 <- update(fm.tobit, formula = . ~ 1)
+1 - as.vector(logLik(fm.tobit)/logLik(fm.tobit0))
+```
+
+### 限界効果
+パッケージ mfx で限界効果は推計してくれない. 自分で計算する必要がある.
+
+AME は以下のようにする.
+```{r, ame_tobit}
+mean(pnorm(predict(fm.tobit)/fm.tobit$scale)) * fm.tobit$coef[-1]
+```
+
+MEM は以下のようにする.
+```{r, mem_tobit}
+pnorm(mean(predict(fm.tobit)/fm.tobit$scale)) * fm.tobit$coef[-1]
+```
+

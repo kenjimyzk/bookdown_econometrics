@@ -1,0 +1,284 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+# 各種確率分布
+```{r include=FALSE}
+rm(list = ls())
+library(knitr)
+opts_chunk$set(echo = TRUE,error = FALSE,warning = FALSE,collapse = TRUE,cache = TRUE,cache.extra = rand_seed, autodep = TRUE)
+``` 
+
+
+```{r message=FALSE, warning=FALSE}
+library(mosaic)
+set.seed(2000)
+```
+
+## 離散確率変数
+### ベルヌーイ分布
+$X$ を確率 $p$ で $1$, 確率 $1-p$ で $0$ をとる確率変数とする.
+このような確率変数の分布をベルヌーイ分布といい,
+$Bern(p)$ と表記する.
+互いに独立なベルヌー分布にしたがう複数の確率変数をベルヌーイ試行という.
+
+$X\sim Bern(p)$ のとき, 期待値と分散は以下である.
+$$
+E[X]=p,\;V[Y]=p(1-p)
+$$
+
+$Bern(0.5)$ となるベルヌーイ試行の乱数は試行回数 $5$ のとき, 
+Rでは  `rbinom(5,1,0.5)` である. これは後述の二項分布の特殊系である.
+
+もしくは一様乱数 `runif(1)` を用いて次のように生成する.
+```{r}
+my_bern <- function(p) as.numeric(runif(1)<p)
+do(5) * my_bern(0.5)
+```
+
+### 幾何分布
+さて, ベルヌーイ試行を繰り返して初めて成功させるまでに失敗した回数も確率変数である.
+このような確率変数の分布は幾何分布といい, $Geom(p)$ と表記する.
+
+$X\sim Geom(p)$ のとき, 期待値と分散は以下である.
+$$
+E[X]=\frac{1-p}{p},\;V[Y]=\frac{1-p}{p^2}
+$$
+
+幾何分布にしたがう確率変数の乱数は `rgeom(n, p)` で実施できる.
+もしくは次のプログラムで実施できる.
+```{r}
+my_geom <- function(p) {
+  counter = 0
+  while(runif(1)>p) {counter <- counter + 1}
+  return(counter)
+}
+do(5) * my_geom(0.5) 
+```
+
+この乱数と密度関数を比較すると以下になる.
+```{r, fig.keep = 'last'}
+siml <- do(10000) * my_geom(0.5)
+histogram(~my_geom, data = siml, width = 1)
+plotDist("geom",0.5, add=TRUE)
+```
+
+なお, ベルヌーイ試行を繰り返して初めて成功させるまでの回数も確率変数である. つまり失敗だけでなく成功回数も加える.
+このときの乱数は以下になる.
+```{r}
+my_geom_alt <- function(p) {
+  counter = 1
+  while(runif(1) > p) {counter <- counter + 1}
+  return(counter)
+}
+```
+
+
+### 二項分布
+確率 $p$ のベルヌーイ試行を $n$ 回くりかえしたとき, 成功回数の和は確率変数となる.
+このような確率変数の分布を二項分布といい, $Binom(n,p)$ と表記する.
+
+$X \sim Binom(n, p)$ のとき, 期待値と分散は以下である.
+$$
+E[X]=np, V[X]=np(1-p)
+$$
+
+$X \sim Binom(5, 0.5)$ にしたがう乱数を4回発生するために, R では `rbinom(4, 5, 0.5)` である.
+
+もしくは一様乱数 `runif`  を用いて次のように生成する.
+```{r}
+my_binom <- function(n, p) {
+  counter = 0;
+  for (i in 1:n) {counter <- counter + (runif(1)<p)}
+  return(counter)
+}
+do(4) * my_binom(5, 0.5)
+```
+
+この乱数と密度関数を比較すると以下になる.
+```{r, fig.keep = 'last'}
+siml <- do(2000) * my_binom(5, 0.5)
+histogram(~my_binom, data = siml, width = 1)
+plotDist("binom",5, 0.5, add=TRUE)
+```
+
+### 負の二項分布
+確率 $p$ のベルヌーイ試行をくりかえしたとき, 
+$r$ 回成功するために失敗した回数は確率変数である.
+このような確率変数の分布は二項分布といい, `Nbinom(r,p)`
+成功回数の和は確率変数となる.
+
+$X \sim Nbinom(r, p)$ のとき, 期待値と分散は以下である.
+$$
+E[X]=\frac{pr}{1-p},\;V[X]=\frac{pr}{(1-p)^2}
+$$
+
+$X \sim Nbinom(5, 0.5)$ にしたがう乱数を3回発生するために, R では `rnbinom(3, 5, 0.5)` である.
+```{r}
+my_nbinom <- function(r, p) {
+  fail <- 0 #失敗回数
+  success <- 0 #成功回数
+  while(success < r){
+    x <- (runif(1) < p) #成功したら1をとる
+    fail <- fail + 1 - x
+    success <- success + x
+  }
+  return(fail)
+}
+do(3) * my_nbinom(5, 0.5)
+```
+
+この乱数と密度関数を比較すると以下になる.
+```{r fig.keep = 'last'}
+siml <- do(20000) * my_nbinom(5, 0.5)
+histogram(~my_nbinom, data=siml, width = 1)
+plotDist('nbinom', 5, 0.5, add=TRUE)
+```
+
+### ポアソン分布
+$X\sim Binom(n, p)$ のとき, その標準化
+$$
+Z =\frac{X-np}{\sqrt{np(1-p)}}
+$$
+は, $n$ が大きくなると, 標準正規分布に近似できることが知られている.
+
+しかしながら, $n$ が大きくなるとともに, $p$ が小さくなると別の分布になる.
+$X\sim Binom(n, p)$ のとき,
+$n\to \infty$, $p\to 0$, $np\to \lambda$ とする.
+この分布をポアソン分布といい, $Pois(\lambda)$ と表記する.
+
+単位時間あたり平均 $\lambda$ 回起こるようなランダムなイベントに対して， 一単位時間にイベントが起きる回数は平均 $\lambda$ のポアソン分布にしたがう.
+
+$X\sim Pois(\lambda)$ のとき, 期待値と分散は以下である.
+$$
+E(X)=\lambda,\;V[X]=\lambda
+$$
+
+$\lambda 3=$ の乱数を $5$ 個発生するには `rpois(5,3)` とする.
+もしくは以下で指数分布を用いて発生させることができる.
+指数分布を説明したあとに紹介する.
+
+## 連続確率変数
+### 対数正規分布
+$X$ を標準正規分布 $Norm(\mu,\sigma^2)$ にしたがう確率変数とする.
+$Y=\exp(X)$ の確率分布を対数正規分布といい,
+$Lnorm(\mu,\sigma^2)$ と表記する.
+
+$Y\sim Lnorm(\mu,\sigma^2)$ のとき, 期待値と分散は以下である.
+$$
+E[Y]=\exp(\mu+\sigma^2/2),\;V[Y]=\exp(2\mu+\sigma^2)[\exp(\sigma^2)-1]
+$$
+
+正規分布の乱数が発生できれば次の手順でできる.
+```{r, fig.keep = 'last'}
+y <- exp(rnorm(1000))
+histogram(~ y[y<10])
+plotDist("lnorm",add= TRUE)
+```
+ヒストグラムで $10$ より大きな値を略している. 
+
+
+### 指数分布
+$X$ を一様分布 $Unif(0,1)$ にしたがう確率変数とする.
+ある正数 $\lambda$ について,$Y=-\log(X)/\lambda$ の確率分布を指数分布といい, $Exp(\lambda)$ と表記する.
+
+単位時間あたり平均 $\lambda$ 回起こるようなランダムなイベントに対して，
+イベントの発生間隔は平均 $1/\lambda$ の指数分布にしたがう.
+
+$Y\sim Exp(\lambda)$ のとき, 期待値と分散は以下である.
+$$
+E(Y)=1/\lambda,\;V[Y]=1/\lambda^2
+$$
+
+一様乱数が発生できれば次の手順で指数分布にしたがう乱数を発生させることができる.
+```{r, fig.keep = 'last'}
+lambda <- 2
+y <- -log(runif(1000))/lambda
+histogram(~y[y<10])
+plotDist("exp", lambda, add= TRUE)
+```
+ヒストグラムで $10$ より大きな値を略している.
+
+### ポアソン分布
+
+単位時間あたり平均 $\lambda$ 回起こるようなランダムなイベントに対して，
+
++ 一単位時間にイベントが起きる回数は平均 $\lambda$ のポアソン分布にしたがう.
++ イベントの発生間隔は平均 $1/\lambda$ の指数分布にしたがう.
+
+このような関係になっており, 
+指数分布にしたがう乱数をもちいて, ポアソン分布にしたがう乱数
+次のアルゴリズムで発生させることができる.
+```{r}
+my_pois <- function(lambda){
+  counter <- 0
+  time.arrival <- -log(runif(1))/lambda
+  while(time.arrival <  1){
+    counter <- counter + 1
+    time.arrival <- time.arrival -log(runif(1))/lambda
+  }
+  return(counter)
+}
+do(5) * my_pois(3)
+```
+
+```{r, fig.keep = 'last'}
+siml <- do(20000) * my_pois(3)
+histogram(~my_pois, data = siml,width = 1)
+plotDist("pois", 3, add= TRUE)
+```
+
+
+### ロジスティク分布
+$X$ を一様分布 $Unif(0,1)$ にしたがう確率変数とする.
+$Y=\log(X/(1-X))$ の確率分布をロジスティック分布といい,
+$Logis(0,1)$ と表記する.
+
+$Y\sim Exp(\lambda)$ のとき, 期待値と分散は以下である.
+$$
+E(Y)=0,\;V[Y]=\pi^2/3
+$$
+
+一様乱数が発生できれば次の手順で指数分布にしたがう乱数を発生させることができる.
+```{r, fig.keep = 'last'}
+x <- runif(10000)
+y <- log(x/(1-x))
+histogram(~y)
+plotDist("logis",add= TRUE)
+```
+
+標準正規分布にしたがう確率変数の分布関数および密度関数と比較する.
+
+```{r figlogis1, eval = FALSE}
+plotDist("norm", kind = "cdf")
+plotDist("logis", kind = "cdf", col = "red", add = TRUE)
+plotDist("norm")
+plotDist("logis", col = "red", add = TRUE)
+```
+```{r figlogis1, fig.keep = c(2,4), fig.show='hold',out.width='50%'}
+```
+
+
+分散をあわせて標準正規分布にしたがう確率変数の分布関数および密度関数と比較する.
+
+```{r figlogis2, eval = FALSE}
+plotDist("norm",sd = pi/sqrt(3), kind = "cdf")
+plotDist("logis", kind = "cdf", col = "red", add = TRUE)
+plotDist("norm",sd = pi/sqrt(3))
+plotDist("logis", col = "red", add = TRUE)
+```
+
+```{r figlogis2, fig.keep = c(2,4), fig.show='hold',out.width='50%'}
+```
+
+確率変数がロジスティック分布にしたがうとき,
+はその密度関数 $f(x)$ は, 分布関数 $F(x)$ を用いて
+$F(x)(1-F(x))$ と表現できる.
+そのため数学的な性質を調べる際に有用な分布である.
+```{r, echo = TRUE, fig.show='hold',out.width='50%'}
+plotFun(dlogis, xlim = c(-3,3))
+plotFun(plogis(x)*(1-plogis(x))~x, xlim = c(-3,3))
+```
+

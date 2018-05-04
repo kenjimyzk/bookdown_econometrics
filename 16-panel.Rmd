@@ -1,0 +1,106 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+# パネルデータ分析
+```{r}
+library(mosaic)
+library(plm)
+```
+
+
+## pooled ols
+```{r}
+simdata0 <- function(N=100){
+  x <- rnorm(N,10,10)
+  y <- 1 + x + rnorm(N,1,10)
+  data.frame(id = 1:N, x, y)
+}
+df0 <- data.frame(simdata(), time = 0)
+df1 <- data.frame(simdata(), time = 1)
+df2 <- data.frame(simdata(), time = 2)
+df <- bind_rows(df0,df1,df2)
+head(df)
+```
+
+```{r}
+df <- pdata.frame(df, index = c("id", "time"))
+fm.pooling <- plm(y~x, data = df, model = "pooling")
+summary(fm.pooling)
+```
+
+## random effect
+```{r}
+simdata1 <- function(N=100, alpha =0){
+  x <- rnorm(N,10,10)
+  y <- alpha + x + rnorm(N,1,10)
+  data.frame(id = 1:N, x,y)
+}
+N = 100
+alpha <- rnorm(N,10,3)
+df0 <- data.frame(simdata1(N,alpha), time = 0)
+df1 <- data.frame(simdata1(N,alpha), time = 1)
+df2 <- data.frame(simdata1(N,alpha), time = 2)
+df <- bind_rows(df0,df1,df2)
+head(df)
+```
+
+```{r}
+df <- pdata.frame(df, index = c("id", "time"))
+fm.pooling <- plm(y~x, data = df, model = "pooling")
+summary(fm.pooling)
+```
+
+```{r}
+fm.re <- plm(y~x, data = df, model = "random")
+summary(fm.re)
+```
+
+```{r}
+plmtest(fm.pooling, effect = "individual")
+plmtest(fm.pooling, effect = "time")
+plmtest(fm.pooling, effect = "twoways")
+```
+
+
+```{r}
+simdata2 <- function(N=100, alpha =0, mux= 10){
+  x <- rnorm(N,mux,10)
+  y <- alpha + x + rnorm(N,0,10)
+  data.frame(id = 1:N, x,y)
+}
+N = 300
+alpha <- rnorm(N,10,10)
+df0 <- data.frame(simdata2(N,alpha,alpha), time = 0)
+df1 <- data.frame(simdata2(N,alpha,alpha), time = 1)
+df2 <- data.frame(simdata2(N,alpha,alpha), time = 2)
+df <- bind_rows(df0,df1,df2)
+head(df)
+```
+
+```{r}
+df <- pdata.frame(df, index = c("id", "time"))
+fm.pooling <- plm(y~x, data = df, model = "pooling")
+summary(fm.pooling)
+```
+
+```{r}
+fm.re <- plm(y~x, data = df, model = "random")
+summary(fm.re)
+```
+
+```{r}
+fm.fe <- plm(y~x, data = df, model = "within")
+summary(fm.fe)
+```
+
+
+```{r}
+pFtest(fm.fe,fm.pooling)
+```
+
+
+```{r}
+phtest(fm.fe,fm.re)
+```
+

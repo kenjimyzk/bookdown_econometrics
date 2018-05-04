@@ -1,0 +1,308 @@
+---
+title: "R Notebook"
+output:
+  html_document: default
+  html_notebook: default
+---
+
+# 推測統計
+```{r include=FALSE}
+rm(list = ls())
+library(knitr)
+opts_chunk$set(echo = TRUE,error = FALSE,warning = FALSE,collapse = TRUE,cache = TRUE,cache.extra = rand_seed, autodep = TRUE)
+library(mosaic)
+library(latticeExtra)
+set.seed(2000)
+``` 
+推測統計学において, 母集団を確率変数に考えて,
+標本は独立同一分布にしたがう確率変数とする.
+複数の確率変数である標本の関数を統計量という.
+
+推測統計学が統計量から母集団について何らかの判断をする.
+母集団の特徴づけるものを母数という.
+母数についての値を標本から得ることを推定といい, 
+推定のための統計量を推定量という. 
+母数についての仮説を標本から得ることを検定といい, 
+検定のための統計量を検定統計量という.
+
+## 推定
+### 点推定
+
+推定量には点推定と区間推定にわかれる.
+推定量は確率変数であり, その期待値が母数と同じ場合, 不偏という.
+
+標本サイズを $n$ とし, 確率変数 $X_{i}$ の平均値 $\mu$ と分散 $\sigma^{2}$ が同じ正規分布にしたがい, 互いに無相関とする. 正規分布なので互いに独立である. 
+標本平均の期待値は $\mu$ なので不偏推定量である.
+
+推定量が標本サイズがおおきくなるについれ分散が小さくなるならば, 
+確率変数にあるある値に収束する
+このとき一致といいう.
+
+先の標本平均の分散は $\sigma^2/n$ であるので, 一致推定量である.
+これは大数の法則より明らかである.
+標本分散についても一致推定量であることが知られている.
+
+また中心極限値定理はの標本平均の標準化が分布関数に収束していくことであった.
+このように推定量が正規分布に収束する場合, 漸近正規であるという.
+
+### 区間推定
+推定量の分布がわかっているならば, ある確率のもと母数が含まれる区間に求めることができる.
+その確率を **信頼係数** (confidence coefficient) といい, その区間を **信頼区間** (confidence interval) といい, その方法を **区間推定** (interval estimation) という.
+
+確率変数 $X_{i}$ の平均値 $\mu$ と分散 $\sigma^{2}$ が同じ正規分布にしたがい, 互いに無相関とする. 正規分布なので互いに独立である. 
+いま $\sigma^{2}$ が既知とする. このとき
+$$
+Z=\frac{\bar{X}-\mu}{SE[\bar{X}]}=\frac{\bar{X}-\mu}{\sigma/\sqrt{n}}=\frac{\sqrt{n}(\bar{X}-\mu)}{\sigma}\sim N(0,1)
+$$
+である. したがって Z が標準正規分布の両側 100$\alpha$%点 $z(\alpha)$ で定まる区間  $[-z(\alpha),\;z(\alpha)]$ に含まれる確率は
+$$
+P\left(\left|\frac{\sqrt{n}(\bar{X}-\mu)}{\sigma}\right|\leq z(\alpha)\right)=1-\alpha=\gamma
+$$
+である. よって, $\mu$ について解いた表現にすると
+$$
+P\left(\bar{X}-z(\alpha)\frac{\sigma}{\sqrt{n}}\leq\mu\leq\bar{X}+z(\alpha)\frac{\sigma}{\sqrt{n}}\right)=1-\alpha=\gamma
+$$
+となる.
+信頼区間は
+$$
+\left[\bar{X}-z(\alpha)\frac{\sigma}{\sqrt{n}},\;\bar{X}+z(\alpha)\frac{\sigma}{\sqrt{n}}\right]
+$$
+となり, 信頼係数は $\gamma=1-\alpha$ である. 
+信頼係数を大きく取ると, 区間幅は大きくなり, また $n$ が大きいと区間幅は小さくなる.
+
+このことを `R` で確かめる.平均10, 分散1で確かめる.
+まずは20個のシミュレーションを実施し, 信頼区間の上限と下限を計算する.
+```{r}
+# siml<-function(N=100,mean=0,sd=1) {
+#   x<-rnorm(N,mean,sd)
+#   m<-mean(x)
+#   ml<-m-1.96*sd/sqrt(N)
+#   mu<-m+1.96*sd/sqrt(N)
+#   return(data.frame(m,ml,mu))
+# }
+set.seed(1234)
+simulation <- do(20) * {
+  N = 100
+  mu = 10
+  sd = 1
+  x <- rnorm(N,mu,sd)
+  m <- mean(x)
+  ml <- m-1.96 * sd/sqrt(N)
+  mu <- m+1.96 * sd/sqrt(N)
+  data.frame(m,ml,mu)
+}
+head(simulation)
+```
+
+これを図示すると以下になる.
+```{r, fig.keep="last"}
+dotplot(.index~m ,data=simulation, ylab="", pch = 16, cex = 1,
+        xlim=c(min(simulation$ml) - .02, max(simulation$mu) + .02))
+ladd(panel.abline(v = 10, col = 2, lty = 2))
+ladd(panel.segments(simulation$ml, as.numeric(y), 
+                    simulation$mu, as.numeric(y), 
+                    lty = 1, col = "blue"))
+```
+
+
+この例では20回中1回だけ正しく区間推定されていないことをしめしている.
+もちろん乱数によっては0回や2回の場合もありうる.
+ただ10万回実施するなら, ほぼ1万回誤って推定されることになる.
+
+## カテゴリカル・データの検定
+以下のデータを考える.
+```{r}
+df<-select(HELPrct,sex,homeless,substance)
+summary(df)
+```
+
+### prop.test
+$X_i$ が確率 $p$ で1, 確率 $1-p$ で0となるベルヌーイ分布にしたがうとき, 標本平均 $\bar{x}$ は大数の法則より, 十分大きな $N$ のもとで $p$ に確率的に収束し,
+中心極限値定理により, 
+$$
+\frac{\sqrt{N}(\bar{x}-p)}{\sqrt{\bar{x}(1-\bar{x})}}\stackrel{a}{\sim}  Norml(0,1)
+$$
+と正規分布に近似できる. これを用いて検定を実施する.
+
+`sex` について女性が3割であることを帰無仮説として検定すると以下の手順をとればよい.
+```{r}
+prop.test(~sex,data=df,p = 0.3)
+```
+上の結果では帰無仮説は棄却している.
+
+同様にホームレスになる確率が50%を帰無仮説とした仮説検定は以下である.
+```{r}
+prop.test(~homeless,data=df)
+```
+帰無仮説が正しいときに自由度のカイ二乗分布にしたがう.
+上の結果では帰無仮説は棄却している.
+
+男性がホームレスになる確率と女性がホームレスになる確率が同じという帰無仮説としたときの検定は以下を実施すればよい.
+```{r}
+prop.test(~homeless|sex,data=df)
+```
+帰無仮説が正しいときに自由度のカイ二乗分布にしたがう.
+上の結果は帰無仮説をギリギリ棄却している.
+`prop.test(sex~homeless,data=df)` と結果は同じである.
+
+
+### binom.test
+
+なお, より正確な検定として二項検定というものがあり, R で実行可能である.
+
+```{r}
+binom.test(~homeless,data=df)
+```
+
+ 
+### xchisq.test
+カテゴリーが3以上ならカイ二乗検定を実施すればよい.
+ライブラリ `mosaic` では標準のカイ二乗検定 `chisq.test` を拡張した `xchisq.test` が利用できる.
+
+一変数の場合を考えよう. 例えば
+```{r}
+tab1<-tally(~substance,data=df)
+tab1
+```
+というデータがある. この比率が同じなのか, たまたまななのか検定することができる.
+
+
+```{r}
+xchisq.test(tab1,p=c(1/3,1/3,1/3))
+```
+なお `p` についての指定がない場合, 等確率を帰無仮説とする.
+
+### 独立性の検定
+二変数のデータを考えよう.
+```{r}
+tab2<-tally(~sex|substance,data=df)
+tab2
+```
+
+この二変数データが独立のとき, 同時確率がそれぞれの周辺確率の積になる.
+同時確率の推定値は以下で実施できる.
+```{r}
+tally(~sex|substance,data=df, format = 'percent')/100
+```
+
+周辺確率の推定値およびそれらの積は以下で実施できる.
+```{r}
+(x <- tally(~sex, data = df, format = 'percent')/100)
+(y <- tally(~substance, data = df, format = 'percent')/100)
+outer(x,y)
+```
+
+
+独立であるかどうかの仮説検定もおなじ `xchisq.test` で実行可能である.
+```{r}
+xchisq.test(tab2)
+```
+この場合, 帰無仮説を強く棄却している.
+
+なお, 独立の検定としてより正確な検定方法としてフィッシャー検定というものがあり, R で実行可能である.
+```{r}
+fisher.test(tab2)
+```
+
+## 数量データの検定
+
+次の数量データを考える.
+```{r}
+df<-select(HELPrct,cesd,pcs,homeless,substance)
+inspect(df)
+```
+
+
+### ティー検定
+標本平均 $\bar{x}$ がある値 $\mu_0$ かどうかという帰無仮説は
+変数が正規分布に従っているならば, ティー検定が実行できる
+標本サイズを $N$, 不偏標本分散を $s^2$ とする. このとき検定統計量
+$$
+\frac{\sqrt{N}(\bar{x}-\mu_0)}{s}
+$$
+は自由度 $N-1$ のティー分布にしたがうことが知られている.
+
+ある平均をとることが帰無仮説になる仮説検定は `t.test` で実行できる.
+```{r}
+t.test(~cesd,mu=30,data=df)
+```
+この場合, 帰無仮説は棄却している. 
+`mu=30` がない場合, `mu=0` という帰無仮説になる.
+`t.test(df$cesd,mu=30)` でも検定可能である.
+
+十分に自由度 (約30以上) があれば正規分布に近似することができる.
+
+### 平均の差の検定
+サイズが $N_1$ と $N_2$ の2つの変数について,
+両方の変数が正規分布に従っていて分散が等しいなら, 
+それぞれの変数の平均が同じかどうか正確にティー検定を実行できる.
+それぞれの標本平均を $\hat{\mu}_1$, $\hat{\mu}_2$ として, 2つの変数の共通の標本分散を $s$ とすると, 検定統計量
+$$
+\frac{\hat{\mu}_1-\hat{\mu}_2}{s\sqrt{\frac{1}{N_1}+\frac{1}{N_2}}}
+$$
+が自由度 $N_1+N_2-2$ のティー分布にしたがうことが知られている.
+ただし $s$ は それぞれの標本分散を $s_1^2$ と $s_2^2$ としたときに
+$$
+s^2=\frac{(N_1-1)\hat{s}_1^2+(N_2-1)\hat{s}_2^2}{N_1+N_2-2}
+$$
+の平方根として計算される.
+
+R での計算実行例は以下である.
+```{r}
+t.test(~cesd|homeless,data=df,var.equal=TRUE)
+```
+帰無仮説は棄却できない. `t.test(cesd~homeless,data=df,var.equal=TRUE)` としても同じ結果が得られる.
+
+
+分散が等しくなくても十分な自由度のもと平均の差の検定が実行できる.
+検定統計量
+$$
+\frac{\hat{\mu}_1-\hat{\mu}_2}{\sqrt{\frac{s_1^2}{N_1}+\frac{s_2^2}{N_2}}}
+$$
+は十分な自由度のもと標準正規分布に近似できることが知られている.
+これはウェルチの検定とも呼ばれている.
+
+R での計算実行例は以下である. オプション `var.equal=TRUE` が不要である.
+```{r}
+t.test(~cesd|homeless,data=df)
+```
+この場合でも帰無仮説は棄却できない.
+分散が等しいという積極的な理由がなければ, こちらを利用したほうがよい.
+
+### 等分散の検定
+サイズが $N_1$ と $N_2$ の2つの変数について,
+両方の変数が正規分布に従っているならば, 
+どちらの分散の同じかどうかの等分散の検定が実行できる.
+それぞれの分散を $s_1^2$ と $s_2^2$ として, 検定統計量を
+$$
+\frac{s_1^2}{s_2^2}
+$$
+とする. ただし分子のほうが分散が大きいとする. 
+帰無仮説が正しいならば自由度が $N_1-1$ と $N_2-1$ のエフ分布になることが知られている.
+
+R での計算実行例は以下である.
+```{r}
+cesd_housed <- df %>% filter(homeless=="housed")  %>% .$cesd 
+cesd_homeless <- df %>% filter(homeless=="homeless")  %>%  .$cesd 
+var.test(cesd_housed, cesd_homeless)
+# var.test(df$cesd[df$homeless=="housed"],df$cesd[df$homeless=="homeless"])
+```
+帰無仮説は棄却できないので, 等分散のもとでの検定が正当化される.
+mosaic による拡張がないので入力が少し煩雑である.
+
+### 無相関の検定
+サイズ $N$ が同じの2つの変数について,
+両方の変数が正規分布に従っているならば, 
+相関係数がゼロであるという帰無仮説とする無相関の検定が実行できる.
+標本相関係数を $r$ として, 検定統計量を
+$$
+\frac{r\sqrt{N-2}}{\sqrt{1-r^2}}
+$$
+とする. 帰無仮説が正しいならば自由度が $N-2$ のティー分布になることが知られている.
+
+R での計算実行例は以下である.
+```{r}
+# cor.test(~pcs+cesd,data=df)
+cor.test(pcs~cesd,data=df)
+```
+である. `cor.test(df$pcs,df$cesd)` でも同様の結果になる. 

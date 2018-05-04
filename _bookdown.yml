@@ -1,0 +1,33 @@
+#書籍ファイル名
+book_filename: "book_filename"
+#チャプターの枕詞
+# chapter_name: "chapter: "
+#出力先の指定。docsに指定しています
+output_dir: docs
+#使用するRmdファイル群。指定しなければすべてのRmdを持ってきます
+rmd_files: ["index.Rmd", 
+            "01-graph.Rmd", 
+            "02-randomvariable.Rmd",
+            "03-binominal.Rmd",
+            "04-normal.Rmd",
+            "05-test.Rmd",
+            "06-ols1.Rmd",
+            "07-ols2.Rmd",
+            "08-ols3.Rmd",
+            "09-ivreg.Rmd",
+            "99-references.Rmd"]
+# 詳しくは公式ドキュメントを参照してください
+new_session: yes
+language:
+  label:
+    fig: '図 '
+    tab: '表 '
+    eq: '式 '
+    thm: '定理 '
+    lem: '補題 '
+    def: '定義 '
+    cor: '系 '
+    prp: '命題 '
+    ex: '例 '
+    proof: '証明 '
+    remark: '注意 '

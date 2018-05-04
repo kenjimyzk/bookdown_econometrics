@@ -1,0 +1,34 @@
+--- 
+title: "Rによる統計分析"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output:
+  bookdown::epub_book
+documentclass: bxjsbook
+classoption: ja=standard, xelatex
+geometry: no
+# monofont: "Source Code Pro Light"
+bibliography: template.bib
+biblio-style: jeconunicode
+link-citations: yes
+#csl: miyazakikenji.csl
+#github-repo: (your-github-repository)
+lang: ja-JP
+description: "This is a description. Please wrote a abstract this contents. "
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(echo = TRUE,cache=TRUE,autodep = TRUE)
+```
+
+
+# はじめに {-}
+
+
+## session info
+私の作業環境 (動作確認環境) です.
+```{r}
+sessionInfo()
+```
+

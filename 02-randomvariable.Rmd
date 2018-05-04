@@ -1,0 +1,457 @@
+---
+output:
+  html_document: default
+  html_notebook: default
+---
+
+# 確率変数
+```{r include=FALSE}
+rm(list = ls())
+library(knitr)
+opts_chunk$set(echo = TRUE,error = FALSE,warning = FALSE,collapse = TRUE,cache = TRUE,cache.extra = rand_seed, autodep = TRUE)
+set.seed(2000)
+```
+
+## 一変数離散確率変数
+
+確率変数は取りうる値とそれに対応する確率により構成される.
+取りうる値が数えられる場合, 離散確率変数といい,
+数えられない場合, 連続確率変数という.
+
+ある離散確率変数 $X$ を考える.
+取りうる値が $I$ 個で $x_1<x_2 <\ldots<x_I$ とする.
+また, それぞれの値についての確率を $p(x_i)=P[X=x_i]$ とする.
+つまり取りうる値に応じて確率が定まる.
+そうした確率を確率関数という. 
+確率関数は次の性質を満たす.
+
++ すべての取りうる値に対応する確率は 0 以上 1 以下になる.
++ すべての取りうる値に対応する確率を足し合わせると 1 になる.
+
+サイコロの例を考える.
+```{r}
+X<-1:6
+P<-rep(1/6,6)
+names(P) <- paste0("X=",X)
+P
+(P>=0 & P<=1) 
+sum(P)
+```
+
+シミュレーションは以下で実施する.
+```{r}
+sample(X, size= 10, replace = TRUE, prob = P)
+```
+
+確率変数 X の取りうる値が $\{x_1,\ldots,x_I\}$ でその確率が $p_X(x_i)$ とする.
+このとき期待値は次のように定義される.
+$$
+E[X]=\sum_{i=1}^I x_i p_X(x_i)
+$$
+
+```{r}
+mu<-sum(X*P)
+mu
+```
+
+関数 $g(x)$ を考える. 
+確率変数 X の取りうる値が $\{x_1,\ldots,x_I\}$ でその確率が $p(x_i)$ とする.
+このとき $Y=g(X)$ も確率変数であり, 期待値も以下のように定義できる.
+$$
+E[g(X)]=\sum_{i=1}^I g(x_i) p_X(x_i)
+$$
+
+一次変換 $Y=a+b X$ は確率変数であり, その期待値は以下である.
+$$
+\begin{align*}
+E[Y]&=E[a+bX]=\sum_{i=1}^I (a+b x_i) p_X(x_i)\\
+&=\sum_{i=1}^I a p(x_i) + \sum_{i=1}^I b x_i p_X(x_i)\\
+&=a \sum_{i=1}^I p(x_i) + b \sum_{i=1}^I x_i p_X(x_i)\\
+&=a+bE[X]
+\end{align*}
+$$
+つまり一次変換の期待値は期待値の一次変換である.
+
+```{r}
+(Y<-10+2*X)
+(muy<-sum(Y*P))
+10+2*mu
+```
+
+関数 $g(x)=(x-E[X])^2$ を考えたときの $g(X)$ 期待値を $X$ の分散という.
+つまり分散の定義は以下となる.
+$$
+V[X]=E[(X-E[X])^2]=\sum_{i=1}^I (x_i-E[X])^2 p_X(x_i)
+$$
+
+```{r}
+(varx<-sum(P*(X-mu)^2))
+```
+
+以下の分散公式が知られている.
+$$
+\begin{align*}
+V[X]&=E[X^2-2E[X]X+E[X]^2]\\
+&=E[X^2]-2E[X]^2+E[X]^2\\
+&=E[X^2]-E[X]^2
+\end{align*}
+$$
+
+```{r}
+sum(P*X^2)-mu^2
+```
+
+確率 $p$ で 1 をとり, $1-p$ で 0 を取る確率変数 $X$ を考える.
+$E[X]=p$, $E[X^2]=p$ なので分散は
+$$
+V[X] = E[X^2] -E[X]^2 = p - p^2 = p(1-p)
+$$
+となる. 確率変数はベルヌーイ分布にしたがうといい,
+$$
+X \sim Bern(p)
+$$
+と表記する.
+
+
+
+
+一次変換の $Y=a+b X$ の分散は以下である.
+$$
+\begin{align*}
+V[Y]&=E[(a+bX-E[a+bX])^2]=E[(bX-bE[X])^2]\\
+&=b^2E[(X-E[X])^2]=b^2V[X]
+\end{align*}
+$$
+
+```{r}
+sum(P*(Y-muy)^2)
+2^2*varx
+```
+
+一次変換 $a+b X$ について $a=-E[X]/\sqrt{V[X]}$, $b=1/\sqrt{V[X]}$としたとき,
+このような一次変換を標準化という.
+標準化された確率変数は $Z$ と表せることも多く, Z 変換ともいう.
+$$
+Z = \frac{X-E[X]}{\sqrt{V[X]}}
+$$
+あきらかに標準化された確率変数の期待値は 0 で分散は 1 である.
+
+
+## 二変数離散確率変数
+2 つの離散確率変数 $X$ と $Y$ を考える.
+このとき同時確率関数を次のように定義する.
+$$
+p(x_i,y_j) = P[X=x_i,Y=y_j]
+$$
+
+また周辺確率関数はそれぞれ以下のように定義される.
+$$
+\begin{align*}
+p_X(x_i)&=P[X=x_i]=\sum_{j=1}^J p(x_i,y_j)\\
+p_Y(y_{j})&=P[Y=y_j]=\sum_{i=1}^I p(x_i,y_j)
+\end{align*}
+$$
+
+```{r}
+X<-1:2
+Y<-3:4
+P<-matrix(c(1/2,1/4,0,1/4),2,2)
+rownames(P) <- paste0("X=",X)
+colnames(P) <- paste0("Y=",Y)
+P
+P >0|P<1
+sum(P)
+(Px<-rowSums(P))
+(Py<-colSums(P))
+```
+
+シミュレーションは以下で実施する.
+```{r}
+names <- paste(rep(rownames(P),times=2),rep(colnames(P),each=2),sep="&")
+sample(names, size= 10, replace = TRUE, P)
+```
+
+データフレイムとして出力するには以下とする.
+```{r}
+df <- sample(list(c(1,3),c(2,3),c(1,4),c(2,5)), size= 10, replace=TRUE, prob= P)
+df <- t(as.data.frame(df)) 
+rownames(df) <- 1:10
+colnames(df) <- c("X","Y")
+df
+```
+
+
+同時確率関数が周辺確率関数の積となるとき, つまり
+すべての $i$, $j$ について
+$$
+p(x_i,y_j)=p_X(x_i)p_Y(y_j)
+$$
+が成り立つとき, 確率変数 $X$ と $Y$ は互いに独立という.
+
+```{r}
+outer(Px,Py)
+all(P == outer(Px,Py))
+```
+
+
+同時確率関数のもとでの期待値は以下のように定義する.
+$$
+\begin{align*}
+E[X]&=\sum_{i=1}^I\sum_{j=1}^J x_i p[x_j,y_j] = \sum_{i=1}^I x_i p_X(x_i)\\
+E[Y]&=\sum_{i=1}^I\sum_{j=1}^J y_i p[x_j,y_j]  = \sum_{j=1}^J y_j p_Y(y_j)
+\end{align*}
+$$
+
+
+```{r}
+mux<-sum(X*Px)
+mux
+muy<-sum(Y*Py)
+muy
+```
+
+
+分散も同様である.
+$$
+\begin{align*}
+V[X]&=\sum_{i=1}^I (x_i-E[X])^2 p_X(x_j)\\
+V[Y]&=\sum_{j=1}^J (y_j-E[Y])^2 p_Y(y_j)
+\end{align*}
+$$
+
+```{r}
+varx<-sum((X-mux)^2*Px)
+varx
+vary<-sum((Y-muy)^2*Py)
+vary
+```
+
+2 つの確率変数の共分散を以下のように定義する.
+$$
+\begin{align*}
+Cov[X,Y]&=E[(X-E[X])(Y-E[Y])]\\
+&=\sum_{i=1}^I\sum_{j=1}^J(x_i-E[X])(y_j-E[Y])p(x_i,y_i)
+\end{align*}
+$$
+
+```{r}
+outer(X-mux,Y-muy)
+(cov<-sum(outer(X-mux,Y-muy)*P))
+```
+
+$X=Y$ のとき分散に帰着する.
+共分散がゼロのとき無相関という.
+
+以下の共分散公式が知られている.
+$$
+\begin{align*}
+Cov[X,Y]&=E[XY-E[X]Y-E[Y]X-E[X]E[Y]]\\
+&=E[XY]-E[X]E[Y]-E[Y]E[X]-E[X]E[Y]\\
+&=E[XY]-E[X]E[Y]
+\end{align*}
+$$
+
+```{r}
+outer(X,Y)
+sum(outer(X,Y)*P)-mux*muy
+```
+
+2 つの確率変数が独立のとき無相関である. 
+$$
+\begin{align*}
+Cov[X,Y]&=\sum_{i=1}^I\sum_{j=1}^J(x_i-E[X])(y_j-E[Y])p(x_i,y_i)\\
+&=\sum_{i=1}^I\sum_{j=1}^J(x_i-E[X])(y_j-E[Y])p_X(x_i)p_Y(y_i)\\
+&=\sum_{i=1}^I(x_i-E[X])p_X(x_i)\sum_{j=1}^J(y_j-E[Y]) p_Y(y_i)\\
+&=E[X]E[Y]
+\end{align*}
+$$
+
+逆は必ずしも正しくない. つぎの確率変数を考える.
+```{r}
+X <- -1:1
+Y <- -1:1
+P <- matrix(c(rep(0.1,4),0.2,rep(0.1,4)),3,3)
+rownames(P) <- paste0("X=",X)
+colnames(P) <- paste0("Y=",Y)
+P
+```
+
+上記の行列は独立でない.
+```{r}
+(Px <- rowSums(P))
+(Py <- colSums(P))
+outer(Px,Py)
+all(P == outer(Px,Py))
+```
+
+独立でないが無相関である.
+```{r}
+(mux<-sum(X*Px))
+(muy<-sum(Y*Py))
+(covxy<-sum(outer(X-mux,Y-muy)*P))
+```
+
+標準化された確率変数同士の共分散を相関係数という.
+よって相関係数は次の式で表せる.
+$$
+\begin{align*}
+Corr[X,Y]&=E\left[\frac{X-E[X]}{\sqrt{V[X]}}\frac{Y-E[Y]}{\sqrt{V[Y]}}\right]
+\\
+&=\frac{Cov[X,Y]}{\sqrt{V[X]},\sqrt{V[Y]}}
+\end{align*}
+$$
+
+```{r}
+covxy/sqrt(varx*vary)
+```
+
+相関係数は -1 以上 1 以下である.
+相関係数が 0 のとき, 2 つの確率変数は無相関という.
+無相関のときに, 互いに独立とは必ずしもいえないことに注意されたい.
+
+## 線形モデル
+
+確率変数 $X$ と $U$ を考える.
+確率変数 $Y=\alpha + \beta X + U$ の平均は
+$$
+E[Y] = \alpha + \beta E[X] + E[U]
+$$
+である. $E[U]=0$ ならば
+$$
+E[Y] = \alpha + \beta E[X]
+$$
+である. 
+
+$Y=\alpha + \beta X + U$ の分散は
+$$
+V[Y]=\beta^2 V[X] + 2\beta Cov[X,U] + V[U]
+$$
+である. $X$ と $U$ が互いに無相関ならば
+$$
+V[Y]=\beta^2 V[X] +  V[U]
+$$
+である.
+
+$X$ と $Y$ の共分散は
+$$
+Cov[X,Y]=\beta V[X] + Cov[X, U]
+$$
+である. $X$ と $U$ が互いに無相関ならば $Cov[X,Y]=\beta V[Y]$ であり, 相関係数は
+$$
+\begin{align}
+Corr[X,Y]&=\frac{Cov[X,Y]}{\sqrt{V[X]}\sqrt{V[Y]}}
+=\frac{\beta V[X]}{\sqrt{V[X](\beta^2V[X]+V[U])}}\\
+&=\frac{\beta}{\sqrt{\beta^2+V[U]/V[X]}}
+\end{align}
+$$
+となる. 相関係数は係数 $\beta$ と分散比 $V[U]/V[X]$ によって決定される.
+
+
+
+## 連続確率変数
+
+連続確率変数の分布関数を次のように定義する.
+$$
+F_X(x)=P[X\leq x]
+$$
+離散確率変数も分布関数が定義できる.
+
+分布関数は次の性質を満たす.
+
++ $F_X(x)$ は増加関数
++ $\lim_{x\to-\infty}F_X(x)=0$
++ $\lim_{x\to\infty}F_X(x)=1$
+
+取りうる値が区間 $[a,b]$ の確率変数 $X$ を考える. その分布関数が
+$$
+F_X(x) = \frac{x}{b-a} (0\leq x\leq 1)
+$$
+となるとき, 確率変数 $X$ は一様分布にしたがうといい,
+$$
+X\sim Unif[0,1]
+$$
+と表記する.
+
+分布関数が微分可能なときその導関数を密度関数という.
+密度関数を $f_X(x)$ とすると以下の関係が成り立つ.
+$$
+\begin{align*}
+\frac{dF_X(x)}{dx}&=f_X(x)\\
+F_X(x)& = \int_{-\infty}^x f_X(\xi) d\xi
+\end{align*}
+$$
+
+一様分布にしたがう確率変数 $X$ の密度関数は以下である.
+$$
+f_X(x) = \frac{1}{b-a} \quad(0\leq x\leq 1)
+$$
+
+密度関数 $f_X(x)$ が存在するとき, 確率変数 $X$ の期待値は次のように定義する.
+$$
+E[X]=\int_{-\infty}^{\infty} x f_X(x) dx
+$$
+
+一様分布にしたがう確率変数 $X$ の期待値は
+$$
+E[X]=\frac{a+b}{2}
+$$
+である.
+
+分散も同様に次のように定義する.
+$$
+V[X]=\int_{-\infty}^{\infty} (x-E[X])^2 f_X(x) dx
+$$
+
+一様分布にしたがう確率変数 $X$ の分散は
+$$
+V[X]=\frac{(b-a)^2}{12}
+$$
+である.
+
+例えば範囲 [0,1] の一様分布の期待値は $1/2$ であり,
+分散は $1/12$ である.
+
+R で確認する. 期待値は以下のようになる.
+```{r}
+integrate(function(x) x,0,1)
+```
+
+分散は以下のようになる.
+```{r}
+integrate(function(x) (x-0.5)^2,0,1)
+```
+
+2 つの連続確率変数 $X,Y$ の同時分布関数は以下によって定義される.
+$$
+F(x,y)=P[X\leq x, Y\leq y]
+$$
+
+2 つの連続確率変数 $X,Y$ の同時分布関数を$F(x,y)$としたとき,
+同時密度関数は以下によって定義される.
+$$
+f(x,y)=\frac{\partial f(x,y)}{\partial x\partial y}
+$$
+
+2 つの連続確率変数 $X,Y$ の同時密度関数を$f(x,y)$としたとき, 周辺密度関数は以下によって定義される.
+$$
+\begin{align*}
+f_X(x)&=\int_{-\infty}^{\infty}f(x,y)dy\\
+f_Y(y)&=\int_{-\infty}^{\infty}f(x,y)dx
+\end{align*}
+$$
+
+2 つの連続確率変数 $X,Y$ の同時密度関数を$f(x,y)$としたとき, 共分散は以下のように定義する.
+$$
+Cov[X,Y]=\int_{-\infty}^{\infty}\int_{-\infty}^{\infty}(x-E[X])(y-E[Y])f(x,y)dxdy
+$$
+
+2 つの連続確率変数 $X,\;Y$ の同時密度関数を $f(x,y)$ とし,
+その周辺密度関数を $f_X(x)$, $f_Y(y)$ とする.
+このとき 
+$$
+f(x,y)=f_X(x)f_Y(y)
+$$
+が成り立つとき 2 つの確率変数は独立となる.
+
+連続確率変数においても離散確率変数と同じく分散公式や共分散公式が成立する.
+

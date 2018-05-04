@@ -1,0 +1,369 @@
+# 単回帰
+```{r include=FALSE}
+rm(list = ls())
+library(knitr)
+opts_chunk$set(echo = TRUE,error = FALSE,warning = FALSE,collapse = TRUE,cache = TRUE,cache.extra = rand_seed, autodep = TRUE)
+``` 
+
+```{r message=FALSE, warning=FALSE}
+library(AER)
+library(mosaic)
+library(latticeExtra)
+library(broom)
+set.seed(2000)
+```
+
+## 最小二乗推定量
+次の単回帰モデルを考える.
+
+$$
+y = \alpha + \beta x + u
+$$
+ここで $x$ は説明変数で,  $y$ は被説明変数である. $u$ は誤差項である.
+パラメータとして $\alpha$ は切片パラメータ, $\beta$ は傾きパラメータである.
+
+
+このとき最小二乗推定量 $\hat{\beta}$ は
+$$
+\hat{\beta}=\frac{\sum_i^N(x_i-\bar{x})(y_i-\bar{y})}{\sum_i^N(x_i-\bar{x})^2}
+$$
+である. また $\hat\alpha$ は
+$$
+\hat\alpha = \bar{y} - \hat\beta \bar{x}
+$$
+である. 
+
+
+次のデータを使用して単回帰モデルを計算する.
+```{r}
+data(cars)
+inspect(cars)
+```
+
+回帰分析は以下で実施する.
+```{r}
+fm <- lm(dist ~ speed, data = cars)
+```
+
+係数は以下で計算できる.
+```{r}
+(bhat <- coef(fm))
+```
+
+回帰係数は以下の計算でも確認できる.
+```{r}
+b1 <- with(cars,cov(speed,dist)/var(speed))
+b0 <- with(cars, mean(dist) -  mean(speed) * b1)
+c(b0, b1)
+```
+
+予測値: $\hat{y_i}=\hat\alpha +\hat\beta x_i$ は `fitted` で計算できる.
+```{r}
+head(with(cars, bhat["(Intercept)"] + bhat["speed"]*speed))
+head(fitted(fm))
+```
+
+残差: $\hat u_i = y_i - \hat y_i$ は `resid` で計算できる.
+```{r}
+head(with(cars, dist - bhat["(Intercept)"] - bhat["speed"]*speed))
+head(resid(fm))
+```
+
+残差自乗和: $\sum \hat u_i^2$ は `deviance` で計算できる.
+```{r}
+sum(resid(fm)^2)
+deviance(fm)
+```
+
+
+観測数を $n$, 説明変数の数を $k$ として, 自由度は $n-k-1$ であり,
+`df.residual` で計算できる. 観測数は `nobs` で計算できる. 
+```{r}
+df.residual(fm)
+nobs(fm)
+```
+
+回帰分析のまとめは以下実施する.
+```{r}
+summary(fm)
+```
+
+決定係数: $R^2 = 1-RSS/\sum  (\hat{y}_i-\bar y)^2$ は以下で計算できる.
+```{r}
+1 - deviance(fm)/with(cars, sum((dist-mean(dist))^2))
+summary(fm)$r.squared
+```
+
+ライブラリ `mosaic` を使っていれば,
+決定係数は以下でも算出できる.
+```{r}
+rsquared(fm)
+```
+
+修正済み決定係数: $\bar{R}^2 = 1-(RSS/(n-2))/(\sum  (\hat{y}_i-\bar y)^2 /(n-1))$ は以下で計算できる.
+```{r}
+1 - (deviance(fm)/df.residual(fm))/with(cars, var(dist))
+summary(fm)$adj.r.squared
+```
+
+### 予測
+それぞれの観測値に応じた予測値は `pred` で実行できる.
+それ以外の説明変数のときの予測値は `makeFun` で関数を作成して実施すればよい.
+たとえば `speed` が $30$ のときの予測値は以下である.
+
+```{r}
+fn <- makeFun(fm)
+fn(speed = 30)
+```
+
+作図は以下のようにする.
+```{r, fig.keep='last'}
+xyplot(dist~speed, data = cars)
+plotFun(fn, add = TRUE)
+```
+
+もしくは `plotModel` を使う.
+```{r}
+plotModel(fm)
+```
+
+ `plotModel` を使えば, いちいち関数に変換することなく作図できるが,
+あとで説明するように対数変換した変数の場合に使えない場合がある.
+
+## 古典的仮定
+単回帰モデル
+$$
+y_i = \alpha + \beta x_i + u_i
+$$
+について次の **古典的仮定** を置いている.
+
++ $(x_i,y_i)$ は $i$ について独立同一分布にしたがう.
++ $E[u_i]=0$ である.
++ $u_i$ と $x_i$ は独立である.
++ $u_i$ は正規分布にしたがう.
+
+このとき最小二乗推定量は一致で, 不偏であり, 正規分布にしたがう.
+**一致**とは推定量が観測値を増やすことによって真のパラメータに (確率的に) 収束することである.
+**不偏**とは推定量の期待値が真のパラメータになることである.
+また他の線形不偏推定量のなかで最も分散が小さいことも知られている.
+
+この性質をシミュレーションで試してみよう.
+仮想的に $\alpha = \beta =1$ のモデルを考え, サンプル100の回帰分析を1000回繰り返す.
+```{r}
+simdata <- function(N = 100) {
+  x <- rnorm(N, mean = 10, sd = 1)
+  y <- 1 + x + rnorm(N)
+  data.frame(x,y)
+}
+siml0 <- do(1000) * lm(y~x,data = simdata())
+```
+
+サンプルサイズが$N=100$ のときの最小二乗法による傾きの推定量をヒストグラで表す.
+```{r}
+histogram(~x, data = siml0,xlim=c(0,2))
+```
+このとき推定が1のまわりでばらついていることが確認できる. (不偏性)
+
+サンプルサイズを $N=100$ から $N=500$ にする.
+```{r}
+siml1 <-do(1000) * lm(y~x,data=simdata(500))
+histogram(~x, data = siml1,xlim=c(0,2))
+```
+前の図と比べ横軸の長さが同じで, 縦軸が違っていることに注意すると,
+推定のばらつきが小さくなっていることを確認できる. (一致性)
+
+2つの分布を同時に表示すると以下になる.
+```{r,fig.keep = "last"}
+densityplot(~x, data=siml0, plot.points = FALSE, 
+            xlim=c(0.5,1.5),ylim=c(0,6)) +
+densityplot(~x, data=siml1, plot.points = FALSE,col=2)
+```
+
+## ティー検定
+古典的仮定仮定のもと, 説明変数を所与として係数の標準誤差は以下になる.
+$$
+SE[\hat\beta]=\frac{\sigma}{\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2}}
+$$
+
+ここで $\sigma$ は誤差項の標準偏差である.
+このとき係数の標準化は, 説明変数に関係なく標準正規分布にしたがう.
+$$
+\frac{\hat{\beta}-\beta}{SE[\hat{\beta}]}\sim N(0,1)
+$$
+
+標準偏差の推定量は
+残差 $\hat{u}_i$ を用いて以下になる.
+$$
+\hat{\sigma}=\sqrt{\frac{\sum_{i=1}^n \hat{u}_i^2}{n-2}}
+$$
+
+標準偏差の推定量を用いた標準化は自由度 $n-2$ のティー分布にしたがう.
+$$
+\frac{\hat{\beta}-\beta}{SE[\hat{\beta}]}\sim t(n-2)
+$$
+
+これをもちいて, 仮説検定が実施できる. 
+帰無仮説 $\beta = 0$ のもと $\hat{\beta}/SE[\hat{\beta}]$ が自由度 $n-2$ のティー分布にしたがう. 
+係数の推定値と標準誤差の比率をティー値と呼ぶ.
+このティー値が, ティー分布の棄却域にある場合に帰無仮説を棄却する.
+
+R において回帰の標準誤差: $\hat\sigma =\sqrt{RSS/(n-2)}$ は次で表示させることができる.
+```{r}
+summary(fm)$sigma
+```
+
+R において係数および標準化は次で抜き出すことができる.
+```{r}
+coef(summary(fm))
+```
+
+標準化した場合の分布をみてみる.
+```{r}
+# tvalue  <- function(data) {  
+#   fm <- lm(y~x, data = data)
+#   estimate <- summary(fm)$coef[2,1]
+#   se <- summary(fm)$coef[2,2]
+#   tval <- (estimate - 1)/se
+#   data.frame(estimate, se, tval)
+# }
+# siml <- do(1000) * tvalue(simdata(100))
+```
+
+```{r}
+siml <- do(1000) * {
+  lm(y~x,data=simdata(100)) %>% tidy() %>%
+    filter(term == "x") %>% select(estimate, std.error) %>%
+    mutate(tval = (estimate-1)/std.error)
+  }
+```
+
+
+
+```{r, fig.keep='last'}
+histogram(~tval, data = siml,xlim = c(-4,4))
+plotDist("t", df = 98, add = TRUE)
+```
+
+## 定数項なしモデル
+定数項なしモデルは以下で実施する.
+```{r}
+fm0 <- lm(dist~speed +0, data = cars)
+summary(fm0)
+```
+
+定数項ありモデルと定数項なしモデルの比較の作図は以下で実施する.
+```{r, fig.keep='last'}
+fn0 <- makeFun(fm0)
+xyplot(dist~speed, data = cars, xlim = c(0,30))
+plotFun(fn, add = TRUE)
+plotFun(fn0, add = TRUE, col = 2)
+```
+
+定数項なしモデルは以下でも実施できる.
+```{r}
+fm1 <- lm(dist~speed - 1,data = cars)
+coef(fm0) == coef(fm1)
+```
+
+
+## 係数の解釈
+
+変数を対数変換して分析がおこなわれることがある.
+それによって解釈が変わることがある.
+
+|被説明変数|説明変数  |解尺>                                               |
+|----------|----------|---------------------------------------------------|
+|$y$       |$x$       |$x$ が1単位増えたとき, $y$ が $\beta$ 単位増える.  |
+|$y$       |$\log(x)$ |$x$ が1%増えたとき, $y$ が $\beta/100$ 単位増える. |
+|$\log(y)$ |$x$       |$x$ が1単位増えたとき, $y$ が $100\beta$ % 増える. |
+|$\log(y)$ |$\log(x)$ |$x$ が1%増えたとき, $y$ が $\beta$ % 増える.       |
+
+
+3つのケースに分けて計算方法と図示の方法を解説する.
+
+### 説明変数が対数
+説明変数が対数のときの以下のように実施する.
+```{r}
+fm <- lm(dist~log(speed),data = cars)
+summary(fm)
+```
+
+作図は以下のようにする.
+```{r, fig.keep='last'}
+fn <- makeFun(fm)
+xyplot(dist~speed, data =cars)
+plotFun(fn, add = TRUE)
+```
+
+この場合 `plotModel` は使える.
+```{r}
+plotModel(fm)
+```
+
+横軸を対数にして線形モデルにするには以下のようする.
+```{r, fig.keep='last'}
+xyplot(dist~log(speed), data = cars)
+plotFun(fn(exp(x))~x, add = TRUE)
+```
+
+なお `plotModel` は使えない.
+
+### 被説明変数が対数
+説明変数が対数のときの以下のように実施する.
+```{r}
+fm <- lm(log(dist)~speed,data = cars)
+summary(fm)
+```
+
+作図は以下のようにする.
+```{r, fig.keep='last'}
+fn <- makeFun(fm)
+xyplot(dist~speed, data = cars)
+plotFun(fn, add = TRUE)
+```
+
+なお `plotModel` は使えない.
+
+縦軸を対数にして線形モデルにするには以下のようにする.
+```{r, fig.keep='last'}
+xyplot(log(dist)~speed, data = cars)
+plotFun(log(fn(x))~x, add = TRUE)
+```
+
+なお `plotModel` は使えない.
+
+### 両変数が対数
+両変数が対数のときの以下のように実施する.
+```{r}
+fm <- lm(log(dist)~log(speed), data = cars)
+summary(fm)
+```
+
+作図は以下のようにする.
+```{r, fig.keep='last'}
+fn <- makeFun(fm)
+xyplot(dist~speed, data = cars)
+plotFun(fn, add = TRUE)
+```
+
+なお `plotModel` は使えない.
+
+両軸を対数にして線形モデルにするには以下のようにする.
+```{r, fig.keep='last'}
+xyplot(log(dist)~log(speed),data = cars)
+plotFun(log(fn(exp(x)))~x,add = TRUE)
+```
+
+なおデータ自体を対数変換して表することもできる.
+```{r, fig.keep='last'}
+fm <- lm(dist~speed, data = log(cars))
+fn <- makeFun(fm)
+xyplot(dist~speed, data = log(cars))
+plotFun(fn, add = TRUE)
+```
+
+この場合 `plotModel` は使える.
+```{r}
+plotModel(fm)
+```
+

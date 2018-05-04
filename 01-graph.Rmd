@@ -1,0 +1,389 @@
+---
+title: "R Notebook"
+output:
+  html_document: default
+  html_notebook: default
+---
+
+# 記述統計
+```{r include=FALSE}
+rm(list = ls())
+library(knitr)
+opts_chunk$set(echo = TRUE,error = FALSE,warning = FALSE,collapse = TRUE,cache = TRUE,cache.extra = rand_seed, autodep = TRUE)
+``` 
+
+```{r}
+library(mosaic)
+library(latticeExtra)
+set.seed(2000)
+```
+
+
+与えられているデータについて, 数字として縮約したり, 表にまとめたり, 図であらわしたりする. 
+このようなことを `R` で簡単に利用可能であることを示す.
+
+```{r}
+data(CPS85)
+summary(CPS85)
+```
+
+```{r}
+inspect(CPS85)
+```
+
+データにはカテゴリカル変数と数量変数に分けられる.
+それぞれの変数についてどのように図示するかを示す.
+
+## カテゴリカル変数
+データフレイム `CPS85` の変数 `sector` を考える.
+これは業種を示すデータである. 
+詳しくは `help(CPS85)` を実行してヘルプをみていただきたい.
+それぞれの業種ごとの観測数を計測するには `tally` を実行する.
+```{r}
+tally(~sector,data=CPS85)
+```
+
+順序を変えるには以下のようにする.
+```{r}
+sort(tally(~sector,data=CPS85),decreasing = TRUE)
+```
+5 番目の「その他 (other)」を最後にするには以下のようにする.
+```{r}
+(tab<-sort(tally(~sector,data=CPS85),decreasing = TRUE)[c(1:4,6:8,5)])
+```
+
+もしくはもとのデータで順序をつけるとよい.
+```{r}
+df<-CPS85 %>% 
+  mutate(sector= factor(sector,
+                        levels =c("prof","clerical","service","manuf",
+                                  "manag","sales","const","other")))
+
+tally(~sector,data=df)
+```
+
+合計を示すにはオプション `margins=TRUE` を付け加える.
+```{r}
+tally(~sector,data=CPS85,margins=TRUE)
+```
+
+
+割合を示すにはオプション `format='percent'` を付け加える.
+```{r}
+tally(~sector, data=CPS85, format='percent',margins=TRUE)
+```
+
+
+作図にはドット図もしくは棒グラフが適切であろう. 
+棒グラフは `bargraph` で実行できる.
+```{r}
+bargraph(~sector,data=CPS85)
+```
+
+この `mosaic` の `bargraph` は `lattice` の `barchart` のラッパーで,
+順序など細かい設定は  `barchart` を直接調整する必要がある.
+また離散データの作図には `lattice` の `dotplot` を使うこともできる.
+
+もしこの図を大きい順に並べ替えたり, 名前を変更するなら, データを変更するのがよい.
+さきに, その他を最後にあとは大きい順に並べ直したデータセット `df` を作成したので, それを用いると以下になる.
+```{r}
+bargraph(~sector,data=df)
+```
+
+縦と横を変更するには次のようにする.
+```{r}
+bargraph(~sector,data=df,horizontal = TRUE)
+```
+
+
+
+円グラフはあまり, 学術研究ではもちいないが, 基本グラフィクス `pie` を使えば良い.
+```{r}
+tally(~sector,data=df, format='percent') %>%
+  pie(clockwise = TRUE)
+```
+
+
+## 2 つのカテゴリカル変数
+データフレイム `CPS85` の変数 `sector` と `sex` を考える.
+前者は業種を示すデータであり, 後者は性別を示すデータである. 
+2 つのカテゴリごとの観測数は以下のように実行する.
+
+```{r}
+tally(sex~sector,data=CPS85)
+```
+
+セクターごとの男女の比率は以下のようになる.
+```{r}
+tally(sex ~ sector,data=CPS85,format = "proportion", margin=TRUE)
+```
+
+
+
+
+縦と横を変えることも出来る.
+```{r}
+tally(sector~sex,data=CPS85)
+```
+
+以下のコマンドと同じ結果になる.
+```{r}
+tally(~sector|sex,data=CPS85)
+```
+
+カテゴリーごとのグラフを実施するには以下を実行する.
+```{r}
+bargraph(~sector|sex,data=CPS85)
+```
+重ねることで見にくくなっている. 細かい調整 `barchart` を直接調整するしかない.
+
+
+同じパネルに男女ごとに並べるたヒストグラムは以下を実施する.
+```{r}
+bargraph(~sector,group=sex,data=CPS85,auto.key=TRUE)
+```
+重ねることも出来る.
+```{r}
+bargraph(~sector,group=sex,data=CPS85,auto.key=TRUE,stack=TRUE)
+```
+
+縦軸とパーセントにするには以下のように `type = "percent"` を付け加える.
+```{r}
+bargraph(~sector,group=sex,data=CPS85,type = "percent",
+         auto.key=TRUE,stack=TRUE)
+```
+
+
+なお, それぞれの部門の比率は, `bargraph` でなく, 基本グラフィクス `barplot` を使えばよい.
+```{r}
+tally(sex ~ sector,data=CPS85,format = "proportion") %>%
+  barplot()
+```
+
+もしくは基本グラフィクス `mosaicplot` を実施する.
+```{r}
+mosaicplot(sector ~ sex, data = CPS85)
+```
+
+
+## 数量変数
+データフレイム `CPS85` の変数 `wage` を考える.
+これは時間あたりの賃金を示す数量変数である.
+
+### 特性値
+標本平均
+$$
+\bar{x}=\frac{1}{N}\sum_{n=1}^N x_n
+$$
+は以下で計算できる.
+```{r}
+mean(~wage,data=CPS85)
+```
+標本分散
+$$
+s_ｘ^2=\frac{1}{N-1}\sum_{n=1}^N (x_n-\bar{x})^2
+$$
+は以下で計算できる.
+```{r}
+var(~wage,data=CPS85)
+```
+その平方根である標準偏差 $s_x$ は以下で計算できる.
+```{r}
+sd(~wage,data=CPS85)
+```
+
+これらを含めた特性値は `favstats` でまとめて表記できる.
+```{r}
+favstats(~wage,data=CPS85)
+```
+ここで min は最小値を意味し, max は最大値を意味し, n は観測数を意味する.
+また median は中央値を意味し, データを大きい順にならべて真ん中に来る値である.
+Q1 は第 1 四分位点であり, 25%に来る値であり, 
+Q4 は第 3 四分位点であり, 75%に来る値である.
+中央値は第 2 四分位点ともいえる.
+ここで中央値と平均と乖離があり分布が偏っていることが示唆される.
+
+対数変換した変数だと中央値と平均値がほぼ同じで偏りがないことが示唆される.
+```{r}
+favstats(~log(wage),data=CPS85)
+```
+
+### 作図
+数量変数の作図はヒストグラムが代表的である.
+```{r}
+histogram(~wage,data=CPS85)
+```
+すこし左に偏っているので対数変換したデータを考える.
+```{r}
+histogram(~log(wage),data=CPS85)
+```
+
+オプション  `width` を用いて幅を調節できる.
+```{r}
+histogram(~log(wage), width = 0.2, data=CPS85)
+```
+
+縦軸を数に置き換えるには `type="count"` とする.
+```{r}
+
+
+
+
+
+
+
+
+
+
+
+
+
+histogram(~log(wage),type="count", data=CPS85)
+```
+
+
+ヒストグラム以外にも密度図でも表記できる.
+```{r}
+densityplot(~log(wage), data=CPS85)
+```
+
+オプション `plot.points = FALSE` で下部の点描をなしにできる.
+```{r}
+densityplot(~log(wage), plot.points = FALSE, data=CPS85)
+```
+
+
+### 数量変数とカテゴリカル変数
+データフレイム `CPS85` の変数 `wage` および `sex` を考える.
+前者は時間あたりの賃金を示す数量変数であり,
+後者は性別を示すカテゴリカル変数である.
+カテゴリカル変数ごとの数量変数の結果は以下を実施すればよい.
+```{r}
+favstats(log(wage)~sex,data=CPS85)
+```
+
+これは以下でも同じ結果になる.
+```{r}
+favstats(~log(wage)|sex,data=CPS85)
+```
+
+ヒストグラムによる作図は以下である.
+```{r}
+histogram(~log(wage),groups=sex,stripes='horizontal',data=CPS85,auto.key=TRUE)
+```
+
+別々のパネルで描くと以下になる.
+```{r}
+histogram(~log(wage)|sex,data=CPS85)
+```
+
+密度図による作図は以下である.
+```{r}
+densityplot(~log(wage),group=sex, plot.points = FALSE,data=CPS85,auto.key = TRUE)
+```
+
+別々のパネルで描くと以下になる.
+```{r}
+densityplot(~log(wage)|sex, plot.points = FALSE,data=CPS85)
+```
+
+他にも箱ひげ図でも表せる.
+```{r}  
+bwplot(log(wage)~sex,data=CPS85)
+```
+
+箱ひげ図の箱は第 1 四分位点と第 3 四分位点で構成され,
+箱の中の点は中央値である.
+ひげの長さは箱の長さの 1.5 倍が基本である. 
+上側のひげは第 3 四分位点から箱の長さの 1.5 倍加えた値と最大値を比較して小さいほうの値である.
+下側のひげは第 1 四分位点から箱の長さの 1.5 倍引いた値と最小値を比較して大きいほうの値である.
+ひげの長さから外れる値は白丸で表示される.
+女性には上側に外れ値が男性は下側に外れ値が存在する.
+
+ひげのをそれぞれの最大値と最小値まで延長するためには `coef = 0`  を付け加えればよい.
+```{r}
+bwplot(log(wage)~sex,data=CPS85, coef = 0)
+```
+
+
+セクターごとの箱ひげ図も可能である.
+```{r}
+bwplot(log(wage)~sex|sector,data=CPS85)
+```
+
+
+## 2 つの数量変数
+データフレイム `CPS85` の変数 `wage` および `educ` を考える.
+どちらも数量変数である.
+
+両者の関係を示すと特性値として **標本共分散**
+$$
+s_{xy}=\frac{1}{N-1}\sum_{n=1}^N (x_n-\bar{x})(y_n-\bar{y})
+$$
+がある. これは `R` において `cov` で計算できる.
+```{r}
+cov(wage~educ,data=CPS85)
+# cov(CPS$wage~CPS$educ)
+```
+で計算できる. また **標本相関係数**
+$$
+r_{xy}=\frac{\sum_{n=1}^N (x_n-\bar{x})(y_n-\bar{y})}
+{\sqrt{\sum_{n=1}^N (x_n-\bar{x})^2}\sqrt{\sum_{n=1}^N (y_n-\bar{y})^2}}
+$$
+がある. これは `R` において `cor` で計算できる.
+```{r}
+cor(wage~educ,data=CPS85)
+# cor(CPS85$wage,CPS85$educ)
+```
+
+2 つのデータは散布図で表すことができる.
+```{r}
+xyplot(log(wage)~educ,CPS85)
+```
+
+`sex` を性別を示すカテゴリカルデータとする.
+カテゴリカル・データごとの散布図はパネルごとなら以下によって実行される.
+```{r}
+xyplot(log(wage)~educ,group=sex,data=CPS85,alpha=0.5,auto.key = TRUE)
+```
+データが重なっているため, `alpha=0.5` と半透明としているが, それでも上手く表示されていない.
+
+
+別々のパネルで表示するなら以下を実行する.
+```{r}
+xyplot(log(wage)~educ|sex,data=CPS85,auto.key = TRUE)
+```
+
+`exper` を経験年数を示す数量データとする. 
+3 つの共分散は次のように実行する.
+```{r}
+#cov(CPS85[c("wage","educ","exper")])
+CPS85 %>% select(wage,educ,exper) %>% cov()
+```
+対角要素は分散である.
+
+3 つの相関係数は次のように実行する.
+```{r}
+#cor(CPS85[c("wage","educ","exper")])
+CPS85 %>% select(wage,educ,exper) %>% cor()
+```
+
+それを図示するには `splom` を使えばよい.
+```{r}
+#splom(CPS85[c("wage","educ","exper")])
+CPS85 %>% select(wage,educ,exper) %>% splom()
+```
+
+なお, 一つの要素を対数変換するには以下を実行する. 
+```{r}
+#splom(data.frame(log(CPS85$wage),CPS85$educ, CPS85$exper))
+CPS85 %>% mutate(lwage = log(wage)) %>% 
+  select(lwage,educ,exper) %>% splom()
+```
+
+3 変数の散布図は以下で実行できる.
+```{r}
+cloud(log(wage)~educ+exper,data=CPS85)
+```
+
+ただ非常に見づらい.

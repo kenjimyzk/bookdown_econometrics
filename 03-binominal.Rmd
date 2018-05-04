@@ -1,0 +1,221 @@
+---
+title: "R Notebook"
+output:
+  html_notebook: default
+  html_document: default
+---
+
+# 二項分布
+```{r include=FALSE}
+rm(list = ls())
+library(knitr)
+opts_chunk$set(echo = TRUE,error = FALSE,warning = FALSE,collapse = TRUE,cache = TRUE,cache.extra = rand_seed, autodep = TRUE)
+library(mosaic)
+library(latticeExtra)
+set.seed(2000)
+``` 
+
+## 二項分布
+表が出る確率が $p$ となるコインを $n$ 回投げるとする.
+このとき表がでる回数は試行によって変わりうる.
+このように確率にしたがう, 試行よって変わりうる変数を確率変数という.
+この確率変数は二項分布にしたがうといわれる.
+
+二項分布にしたがう確率変数 $X$ が $k$ である確率 $P[X=k]$ は
+$$
+{n \choose k}p^k (1-p)^{n-k}
+$$
+xである. ここで
+$$
+{n \choose k}=\frac{n!}{k!(n-k)!}
+$$
+である. 
+
+例えば $n=6$, $p=0.5$ としたとき, つまり歪みのないコインを6回投げるときの, 表がでる回数は二項分布にしたがう確率変数である.
+表が2回でる回数は $k=2$ なので以下となる.
+```{r}
+choose(6,2)*0.5^2*0.5^4
+```
+
+
+また表がでる確率が0.6ならば以下となる.
+```{r}
+choose(6,2)*0.6^2*0.4^4
+```
+
+もしくは関数 `dbinom` を使う.
+```{r}
+dbinom(2,6,0.6)
+```
+
+
+さて歪みのないコインに戻して
+横軸を表のでる回数とする理論的な確率を図示すると以下になる.
+```{r}
+plotDist("binom",6,0.5)
+```
+
+さて先ほどの図は理論的なことであるが試しに $p=0.5$ となるコインを6回投げてみる.
+```{r}
+rflip(6)
+```
+
+このことを2回繰り返すと次のようにまとめられる.
+```{r}
+do(2) * rflip(6)
+```
+ここで `prop` は表が出た割合である. 
+表が出るとき1, 裏が出るとき0となる変数とすると, 標本平均は表が出た割合になる. 
+1回めと2回めとでは割合は異なっている. つまり割合自身も確率変数である.
+
+一万回繰り返して表の回数をまとめると以下になる.
+```{r}
+coins <- do(10000) * rflip(6)
+tally(~heads, data = coins)
+```
+
+これをヒストグラムに表現すると以下になる.
+```{r}
+histogram(~heads,data=coins,breaks=seq(-0.5,6.5,by=1),type="density")
+```
+さらに理論的な分布と重ねると以下になり, ほぼ一致することが確認できる.
+```{r}
+plotDist("binom",6,0.5,add=TRUE)
+```
+
+## 大数の法則
+表が出る確率が $p=0.78$ となるコインを $2$ 回投げるとする.
+このとき表がでる回数は二項分布にしたがい, その試行を1000回繰り返したときのヒストグラムは以下になる.
+```{r}
+coins <- do(1000) * rflip(2,prob=0.78)
+histogram(~prop, data = coins,breaks=seq(-0.05,1.05,by=0.1),type="density")
+```
+
+コインを $5$ 回投げる試行を1000回繰り返したときのヒストグラムは以下になる.
+
+```{r}
+coins <- do(1000) * rflip(5,prob=0.78)
+histogram(~prop, data = coins,breaks=seq(-0.05,1.05,by=0.1),type="density")
+```
+
+コインを $25$ 回投げる試行を1000回繰り返したときのヒストグラムは以下になる.
+
+```{r}
+coins <- do(1000) * rflip(25,prob=0.78)
+histogram(~prop, data = coins,xlim=c(0,1))
+```
+
+コインを $100$ 回投げる試行を1000回繰り返したときのヒストグラムは以下になる.
+
+```{r}
+coins <- do(1000) * rflip(100,prob=0.78)
+histogram(~prop, data = coins,xlim=c(0,1))
+```
+
+コインを投げる回数を増やすに連れて, 割合が$0.78$ に近づいていくことが分かるだろう.
+ここでの割合は標本平均であり, これが母平均に確率的に近づいていくことを大数の法則という. 大数の法則はどの様な分布にも成立する.
+
+$X$ が $[0,1]$ 一様分布にしたがうとき, 平均は
+$$
+E[X]=\int_0^1 x dx =\left[\frac{x^2}{2}\right]^1_0=\frac{1}{2}
+$$
+である. 
+
+標本平均はサイズが大きくなれば 0.5 に近づく.
+```{r,fig.keep='last'}
+n<-cumsum(runif(100))/1:100
+xyplot(n~1:100,type="l",ylim=c(0.3,0.7))
+ladd(panel.abline(h=0.5))
+```
+
+0.5 に近づいている.
+
+```{r,fig.keep='last'}
+n1<-cumsum(runif(100))/1:100
+n2<-cumsum(runif(100))/1:100
+n3<-cumsum(runif(100))/1:100
+xyplot(n+n1+n2+n3~1:100,add=TRUE,type="l",col=rainbow(4))
+ladd(panel.abline(h=0.5))
+```
+
+どれも0.5に近づいているが, 近づき方が同じではない.
+
+## 中心極限値定理
+$X$ が範囲 $[0,1]$ の一様分布にしたがうとき, 平均は $1/2$, 分散は $1/12$ である.
+実際, 分散は $V[X]=E[X^2]-E[X]^2$ なので
+$$
+E[X^2]=\int_0^1 x^2 dx =\left[\frac{x^3}{3}\right]^1_0=\frac{1}{3}
+$$
+より
+$$
+V[X]=E[X^2]-E[X]^2=\frac{1}{3}-\frac{1}{2^2}=\frac{1}{12}
+$$
+である.
+
+さて10万個の乱数を発生させてヒストグラムを記述すると以下となる.
+```{r}
+x<-runif(1e+5)
+histogram(x,breaks=seq(0,1,length=20))
+```
+$X_1$ と $X_2$ が互いに独立で, それぞれ $[0,1]$ 一様分布にしたがうとする. このとき, その和 $X_1+X_2$ の平均は $1$ となり, 分散は $1/6$ となる. 
+実際  $E[X_1+X_2]=E[X_1]+E[X_2]$ であり, 互いに独立のとき $V[X_1+X_2]=V[X_1]+V[X_2]$ となるからである.
+10万個の乱数を発生させてヒストグラムを記述すると以下となる.
+```{r}
+x<-runif(1e+5)+runif(1e+5)
+histogram(x)
+```
+これは三角分布となりその密度関数は以下であることが知られている.
+$$
+f(x)=1-|x-1|\;(0\leq x \leq 2)
+$$
+$X_i$ $(i=1,\ldots,12)$ が互いに独立で, それぞれ $[0,1]$ 一様分布にしたがうとする. 
+このとき, その和 $\sum_{i=1}^{12} X_i$ の平均は $6$ となり, 分散は $1$ となる. 
+10万個の乱数を発生させてヒストグラムを記述すると以下となる.
+```{r}
+x <- function(k) {sum(runif(k))}
+df<-do(10000)*x(12)
+histogram(~x,df)
+```
+
+これに平均12, 分散1 にしたがう正規分布の密度関数と重ねると以下となる.
+```{r}
+plotDist("norm",mean=6,add=TRUE)
+```
+
+$$
+\sum_i^N x_i \stackrel{a}{\sim} Normal(N\mu, N\sigma^2) 
+$$
+$\bar x = N^{-1}\sum_{i=1}^N x_i$ とすると以下に近似できる.
+$$
+\bar x  \stackrel{a}{\sim} Normal(\mu, \sigma^2/N) 
+$$
+さらに標準化すると以下に近似できる.
+$$
+\frac{\bar x-\mu}{\sigma/\sqrt{N}}=\frac{\sqrt{N}(\bar x-\mu)}{\sigma}  \stackrel{a}{\sim} Normal(0,1) 
+$$
+一般に分散が存在する確率変数は十分の数だけ足し合わせると正規分布に近似できることが知られている. これを _中心極限定理_ という.
+
+中心極限値はどの分布でも成立する. たとえば二項分布の場合, 母比率 $p$ 母分散 $p(1-p)$ のとき, サイズ $N$ の標本平均 $\bar x$ について
+$$
+\frac{\sqrt{N}(\bar x-p)}{\sqrt{p(1-p)}}  \stackrel{a}{\sim} Normal(0,1) 
+$$
+が成立する.
+
+```{r, fig.keep="last"}
+n=100;prob=0.5
+coins <- do(10000) * rflip(n,prob=prob)
+coins <- mutate(coins,sprop=sqrt(n)*(prop-prob)/sqrt(prob*(1-prob)))
+histogram(~sprop, data = coins)
+plotDist("norm",add=TRUE)
+```
+
+さきの計算は分散がわかっている場合の計算であるが, 標本平均をもちいて分散の推定量に置き換えても正規分布も近似できる.
+$$
+\frac{\sqrt{N}(\bar x-p)}{\sqrt{\bar x(1-\bar x)}}  \stackrel{a}{\sim} Normal(0,1) 
+$$
+
+```{r, fig.keep='last'}
+coins <- mutate(coins,ssprop=sqrt(n)*(prop-prob)/sqrt(prop*(1-prop)))
+histogram(~ssprop, data = coins,ype="density")
+plotDist("norm",add=TRUE)
+```
