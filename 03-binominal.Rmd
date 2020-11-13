@@ -10,10 +10,14 @@ output:
 rm(list = ls())
 library(knitr)
 opts_chunk$set(echo = TRUE,error = FALSE,warning = FALSE,collapse = TRUE,cache = TRUE,cache.extra = rand_seed, autodep = TRUE)
-library(mosaic)
-library(latticeExtra)
-set.seed(2000)
 ``` 
+
+```{r}
+library(mosaic)
+library(tidyverse)
+set.seed(1000)
+```
+
 
 ## 二項分布
 表が出る確率が $p$ となるコインを $n$ 回投げるとする.
@@ -25,7 +29,7 @@ set.seed(2000)
 $$
 {n \choose k}p^k (1-p)^{n-k}
 $$
-xである. ここで
+である. ここで
 $$
 {n \choose k}=\frac{n!}{k!(n-k)!}
 $$
@@ -52,7 +56,7 @@ dbinom(2,6,0.6)
 さて歪みのないコインに戻して
 横軸を表のでる回数とする理論的な確率を図示すると以下になる.
 ```{r}
-plotDist("binom",6,0.5)
+gf_dist("binom",size=6,prob=0.5)
 ```
 
 さて先ほどの図は理論的なことであるが試しに $p=0.5$ となるコインを6回投げてみる.
@@ -76,11 +80,12 @@ tally(~heads, data = coins)
 
 これをヒストグラムに表現すると以下になる.
 ```{r}
-histogram(~heads,data=coins,breaks=seq(-0.5,6.5,by=1),type="density")
+gf_dhistogram(~heads,data=coins,breaks=seq(-0.5,6.5,by=1))
 ```
 さらに理論的な分布と重ねると以下になり, ほぼ一致することが確認できる.
 ```{r}
-plotDist("binom",6,0.5,add=TRUE)
+gf_dhistogram(~heads,data=coins,breaks=seq(-0.5,6.5,by=1)) %>%
+  gf_dist("binom",size=6,prob=0.5)
 ```
 
 ## 大数の法則
@@ -88,28 +93,28 @@ plotDist("binom",6,0.5,add=TRUE)
 このとき表がでる回数は二項分布にしたがい, その試行を1000回繰り返したときのヒストグラムは以下になる.
 ```{r}
 coins <- do(1000) * rflip(2,prob=0.78)
-histogram(~prop, data = coins,breaks=seq(-0.05,1.05,by=0.1),type="density")
+gf_dhistogram(~prop, data = coins,breaks=seq(-0.05,1.05,by=0.1))
 ```
 
 コインを $5$ 回投げる試行を1000回繰り返したときのヒストグラムは以下になる.
 
 ```{r}
 coins <- do(1000) * rflip(5,prob=0.78)
-histogram(~prop, data = coins,breaks=seq(-0.05,1.05,by=0.1),type="density")
+gf_dhistogram(~prop, data = coins,breaks=seq(-0.05,1.05,by=0.1))
 ```
 
 コインを $25$ 回投げる試行を1000回繰り返したときのヒストグラムは以下になる.
 
 ```{r}
 coins <- do(1000) * rflip(25,prob=0.78)
-histogram(~prop, data = coins,xlim=c(0,1))
+gf_dhistogram(~prop, data = coins,xlim=c(0,1))
 ```
 
 コインを $100$ 回投げる試行を1000回繰り返したときのヒストグラムは以下になる.
 
 ```{r}
 coins <- do(1000) * rflip(100,prob=0.78)
-histogram(~prop, data = coins,xlim=c(0,1))
+gf_dhistogram(~prop, data = coins,xlim=c(0,1))
 ```
 
 コインを投げる回数を増やすに連れて, 割合が$0.78$ に近づいていくことが分かるだろう.
@@ -124,8 +129,8 @@ $$
 標本平均はサイズが大きくなれば 0.5 に近づく.
 ```{r,fig.keep='last'}
 n<-cumsum(runif(100))/1:100
-xyplot(n~1:100,type="l",ylim=c(0.3,0.7))
-ladd(panel.abline(h=0.5))
+gf_line(n~1:100,ylim=c(0.3,0.7)) %>%
+  gf_hline(yintercept = ~0.5,color="red")
 ```
 
 0.5 に近づいている.
@@ -134,8 +139,10 @@ ladd(panel.abline(h=0.5))
 n1<-cumsum(runif(100))/1:100
 n2<-cumsum(runif(100))/1:100
 n3<-cumsum(runif(100))/1:100
-xyplot(n+n1+n2+n3~1:100,add=TRUE,type="l",col=rainbow(4))
-ladd(panel.abline(h=0.5))
+df <- data.frame(n0=n,n1=n1,n2=n2,n3=n3,t=1:100) %>% 
+  gather(key,value,-t)
+gf_line(value~t,color=~key,data=df) %>%
+  gf_hline(yintercept = ~0.5,color="black")
 ```
 
 どれも0.5に近づいているが, 近づき方が同じではない.
@@ -155,14 +162,14 @@ $$
 さて10万個の乱数を発生させてヒストグラムを記述すると以下となる.
 ```{r}
 x<-runif(1e+5)
-histogram(x,breaks=seq(0,1,length=20))
+gf_histogram(~x,breaks=seq(0,1,length=20),color="white")
 ```
 $X_1$ と $X_2$ が互いに独立で, それぞれ $[0,1]$ 一様分布にしたがうとする. このとき, その和 $X_1+X_2$ の平均は $1$ となり, 分散は $1/6$ となる. 
 実際  $E[X_1+X_2]=E[X_1]+E[X_2]$ であり, 互いに独立のとき $V[X_1+X_2]=V[X_1]+V[X_2]$ となるからである.
 10万個の乱数を発生させてヒストグラムを記述すると以下となる.
 ```{r}
 x<-runif(1e+5)+runif(1e+5)
-histogram(x)
+gf_histogram(~x,color="white")
 ```
 これは三角分布となりその密度関数は以下であることが知られている.
 $$
@@ -172,14 +179,14 @@ $X_i$ $(i=1,\ldots,12)$ が互いに独立で, それぞれ $[0,1]$ 一様分布
 このとき, その和 $\sum_{i=1}^{12} X_i$ の平均は $6$ となり, 分散は $1$ となる. 
 10万個の乱数を発生させてヒストグラムを記述すると以下となる.
 ```{r}
-x <- function(k) {sum(runif(k))}
-df<-do(10000)*x(12)
-histogram(~x,df)
+df<-do(10000)*sum(runif(12))
+gf_histogram(~sum,data=df)
 ```
 
 これに平均12, 分散1 にしたがう正規分布の密度関数と重ねると以下となる.
 ```{r}
-plotDist("norm",mean=6,add=TRUE)
+gf_dhistogram(~sum,data=df) %>%
+  gf_dist("norm",mean=6)
 ```
 
 $$
@@ -202,11 +209,12 @@ $$
 が成立する.
 
 ```{r, fig.keep="last"}
-n=100;prob=0.5
+n=100; prob=0.5
 coins <- do(10000) * rflip(n,prob=prob)
-coins <- mutate(coins,sprop=sqrt(n)*(prop-prob)/sqrt(prob*(1-prob)))
-histogram(~sprop, data = coins)
-plotDist("norm",add=TRUE)
+coins <- coins %>%
+  mutate(sprop=sqrt(n)*(prop-prob)/sqrt(prob*(1-prob)))
+gf_dhistogram(~sprop, data = coins,binwidth = 0.5,color="white") %>%
+  gf_dist("norm")
 ```
 
 さきの計算は分散がわかっている場合の計算であるが, 標本平均をもちいて分散の推定量に置き換えても正規分布も近似できる.
@@ -215,7 +223,8 @@ $$
 $$
 
 ```{r, fig.keep='last'}
-coins <- mutate(coins,ssprop=sqrt(n)*(prop-prob)/sqrt(prop*(1-prop)))
-histogram(~ssprop, data = coins,ype="density")
-plotDist("norm",add=TRUE)
+coins <- coins %>% 
+  mutate(ssprop=sqrt(n)*(prop-prob)/sqrt(prop*(1-prop)))
+gf_dhistogram(~ssprop, data = coins,binwidth = 0.5,color="white") %>%
+  gf_dist("norm")
 ```
