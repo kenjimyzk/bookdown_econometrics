@@ -5,7 +5,7 @@ output:
   html_notebook: default
 ---
 
-# 記述統計
+# 記述統計とグラフ
 ```{r include=FALSE}
 rm(list = ls())
 library(knitr)
@@ -31,7 +31,7 @@ summary(CPS85)
 inspect(CPS85)
 ```
 
-データにはカテゴリカル変数と数量変数に分けられる.
+データは, カテゴリカル変数と数量 (ニューメリック) 変数に分けられる.
 それぞれの変数についてどのように図示するかを示す.
 
 ## カテゴリカル変数
@@ -77,32 +77,31 @@ tally(~sector, data=CPS85, format='percent',margins=TRUE)
 作図にはドット図もしくは棒グラフが適切であろう. 
 棒グラフは `bargraph` で実行できる.
 ```{r}
-bargraph(~sector,data=CPS85)
+gf_bar(~sector,data=CPS85)
 ```
 
-この `mosaic` の `bargraph` は `lattice` の `barchart` のラッパーで,
-順序など細かい設定は  `barchart` を直接調整する必要がある.
-また離散データの作図には `lattice` の `dotplot` を使うこともできる.
+オプション `fill=~sector` をつけることでカラフルにできる.
+```{r}
+gf_bar(~sector,fill=~sector,data=CPS85)
+```
 
 もしこの図を大きい順に並べ替えたり, 名前を変更するなら, データを変更するのがよい.
 さきに, その他を最後にあとは大きい順に並べ直したデータセット `df` を作成したので, それを用いると以下になる.
 ```{r}
-bargraph(~sector,data=df)
+gf_bar(~sector,fill=~sector,data=df)
 ```
 
 縦と横を変更するには次のようにする.
 ```{r}
-bargraph(~sector,data=df,horizontal = TRUE)
+gf_barh(~sector,fill=~sector,data=df)
 ```
-
-
+最後の`other`が一番上に位置していることに注意.
 
 円グラフはあまり, 学術研究ではもちいないが, 基本グラフィクス `pie` を使えば良い.
 ```{r}
 tally(~sector,data=df, format='percent') %>%
   pie(clockwise = TRUE)
 ```
-
 
 ## 2 つのカテゴリカル変数
 データフレイム `CPS85` の変数 `sector` と `sex` を考える.
@@ -118,9 +117,6 @@ tally(sex~sector,data=CPS85)
 tally(sex ~ sector,data=CPS85,format = "proportion", margin=TRUE)
 ```
 
-
-
-
 縦と横を変えることも出来る.
 ```{r}
 tally(sector~sex,data=CPS85)
@@ -133,36 +129,31 @@ tally(~sector|sex,data=CPS85)
 
 カテゴリーごとのグラフを実施するには以下を実行する.
 ```{r}
-bargraph(~sector|sex,data=CPS85)
+gf_bar(~sector,fill=~sex,data=CPS85)
 ```
-重ねることで見にくくなっている. 細かい調整 `barchart` を直接調整するしかない.
+同じパネルに男女ごとに重ねたヒストグラムになる.
+
+オプション `position = "dodge"` を追加することで, 並べることもできる出来る.
+```{r}
+gf_bar(~sector,fill=~sex,position = "dodge",data=CPS85)
+```
+ただsectorがconstのときの女性がゼロなので表記がおかしくなっている.
 
 
-同じパネルに男女ごとに並べるたヒストグラムは以下を実施する.
+オプション `position = "dodge"` に変更することで, それぞれの部門の比率が表示される．
 ```{r}
-bargraph(~sector,group=sex,data=CPS85,auto.key=TRUE)
-```
-重ねることも出来る.
-```{r}
-bargraph(~sector,group=sex,data=CPS85,auto.key=TRUE,stack=TRUE)
-```
-
-縦軸とパーセントにするには以下のように `type = "percent"` を付け加える.
-```{r}
-bargraph(~sector,group=sex,data=CPS85,type = "percent",
-         auto.key=TRUE,stack=TRUE)
+gf_bar(~sector,fill=~sex,position = "fill",data=CPS85)
 ```
 
 
-なお, それぞれの部門の比率は, `bargraph` でなく, 基本グラフィクス `barplot` を使えばよい.
+別々のパネルで表すには以下を実行するればよい.
 ```{r}
-tally(sex ~ sector,data=CPS85,format = "proportion") %>%
-  barplot()
+gf_barh(~sector|sex,fill=~sex,data=CPS85)
 ```
 
-もしくは基本グラフィクス `mosaicplot` を実施する.
+重ねることで見にくくなっているので横にする．
 ```{r}
-mosaicplot(sector ~ sex, data = CPS85)
+gf_barh(~sector|sex,fill=~sex,data=CPS85)
 ```
 
 
@@ -211,47 +202,27 @@ favstats(~log(wage),data=CPS85)
 ### 作図
 数量変数の作図はヒストグラムが代表的である.
 ```{r}
-histogram(~wage,data=CPS85)
+gf_histogram(~wage,data=CPS85)
 ```
 すこし左に偏っているので対数変換したデータを考える.
 ```{r}
-histogram(~log(wage),data=CPS85)
+gf_histogram(~log(wage),data=CPS85)
 ```
 
-オプション  `width` を用いて幅を調節できる.
+オプション  `binwidth` を用いて幅を調節できる.
 ```{r}
-histogram(~log(wage), width = 0.2, data=CPS85)
+gf_histogram(~log(wage), binwidth = 0.5, data=CPS85)
 ```
 
-縦軸を数に置き換えるには `type="count"` とする.
+縦軸を密度に置き換えるには `gf_dhistogram` を用いる.
 ```{r}
-
-
-
-
-
-
-
-
-
-
-
-
-
-histogram(~log(wage),type="count", data=CPS85)
+gf_dhistogram(~log(wage),data=CPS85)
 ```
 
-
-ヒストグラム以外にも密度図でも表記できる.
+密度図にするには `gf_density` を用いる.
 ```{r}
-densityplot(~log(wage), data=CPS85)
+gf_density(~log(wage), data=CPS85)
 ```
-
-オプション `plot.points = FALSE` で下部の点描をなしにできる.
-```{r}
-densityplot(~log(wage), plot.points = FALSE, data=CPS85)
-```
-
 
 ### 数量変数とカテゴリカル変数
 データフレイム `CPS85` の変数 `wage` および `sex` を考える.
@@ -269,27 +240,32 @@ favstats(~log(wage)|sex,data=CPS85)
 
 ヒストグラムによる作図は以下である.
 ```{r}
-histogram(~log(wage),groups=sex,stripes='horizontal',data=CPS85,auto.key=TRUE)
+gf_histogram(~log(wage),fill=~sex,data=CPS85)
 ```
 
 別々のパネルで描くと以下になる.
 ```{r}
-histogram(~log(wage)|sex,data=CPS85)
+gf_histogram(~log(wage)|sex,fill=~sex,data=CPS85)
 ```
 
-密度図による作図は以下である.
+密度図による作図は以下である. 重ねるためにオプション `alpha=0.5` をつけている．
 ```{r}
-densityplot(~log(wage),group=sex, plot.points = FALSE,data=CPS85,auto.key = TRUE)
+gf_density(~log(wage),fill=~sex,alpha=0.5, data=CPS85)
 ```
+
+```{r}
+gf_density(~log(wage),fill=~sex,position = "stack", data=CPS85)
+```
+
 
 別々のパネルで描くと以下になる.
 ```{r}
-densityplot(~log(wage)|sex, plot.points = FALSE,data=CPS85)
+gf_density(~log(wage)|sex,fill=~sex, data=CPS85)
 ```
 
 他にも箱ひげ図でも表せる.
 ```{r}  
-bwplot(log(wage)~sex,data=CPS85)
+gf_boxplot(log(wage)~sex,fill=~sex,data=CPS85)
 ```
 
 箱ひげ図の箱は第 1 四分位点と第 3 四分位点で構成され,
@@ -297,18 +273,19 @@ bwplot(log(wage)~sex,data=CPS85)
 ひげの長さは箱の長さの 1.5 倍が基本である. 
 上側のひげは第 3 四分位点から箱の長さの 1.5 倍加えた値と最大値を比較して小さいほうの値である.
 下側のひげは第 1 四分位点から箱の長さの 1.5 倍引いた値と最小値を比較して大きいほうの値である.
-ひげの長さから外れる値は白丸で表示される.
+ひげの長さから外れる値は黒丸で表示される.
 女性には上側に外れ値が男性は下側に外れ値が存在する.
 
-ひげのをそれぞれの最大値と最小値まで延長するためには `coef = 0`  を付け加えればよい.
+点の散らばりも加えるためには `gf_jitter` も実施する.
 ```{r}
-bwplot(log(wage)~sex,data=CPS85, coef = 0)
+gf_boxplot(log(wage)~sex,fill=~sex,data=CPS85,outlier.alpha = 0) %>% gf_jitter(alpha=0.5)
 ```
+外れ値が二重にならないように最初のオプションに`outlier.alpha = 0` を加える.
 
 
 セクターごとの箱ひげ図も可能である.
 ```{r}
-bwplot(log(wage)~sex|sector,data=CPS85)
+gf_boxplot(log(wage)~sex|sector,fill=~sex,data=CPS85)
 ```
 
 
@@ -338,20 +315,20 @@ cor(wage~educ,data=CPS85)
 
 2 つのデータは散布図で表すことができる.
 ```{r}
-xyplot(log(wage)~educ,CPS85)
+gf_point(log(wage)~educ,data=CPS85)
 ```
 
 `sex` を性別を示すカテゴリカルデータとする.
 カテゴリカル・データごとの散布図はパネルごとなら以下によって実行される.
 ```{r}
-xyplot(log(wage)~educ,group=sex,data=CPS85,alpha=0.5,auto.key = TRUE)
+gf_point(log(wage)~educ,color=~sex,alpha=0.5,data=CPS85)
 ```
 データが重なっているため, `alpha=0.5` と半透明としているが, それでも上手く表示されていない.
 
 
 別々のパネルで表示するなら以下を実行する.
 ```{r}
-xyplot(log(wage)~educ|sex,data=CPS85,auto.key = TRUE)
+gf_point(log(wage)~educ|sex,color=~sex,alpha-0.5,data=CPS85)
 ```
 
 `exper` を経験年数を示す数量データとする. 
@@ -368,7 +345,7 @@ CPS85 %>% select(wage,educ,exper) %>% cov()
 CPS85 %>% select(wage,educ,exper) %>% cor()
 ```
 
-それを図示するには `splom` を使えばよい.
+それを図示するには `lattice` パッケージの `splom` を使えばよい.
 ```{r}
 #splom(CPS85[c("wage","educ","exper")])
 CPS85 %>% select(wage,educ,exper) %>% splom()
@@ -381,7 +358,7 @@ CPS85 %>% mutate(lwage = log(wage)) %>%
   select(lwage,educ,exper) %>% splom()
 ```
 
-3 変数の散布図は以下で実行できる.
+3 変数の散布図は`lattice` パッケージの `cloud` で実行できる.
 ```{r}
 cloud(log(wage)~educ+exper,data=CPS85)
 ```
