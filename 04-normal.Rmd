@@ -9,10 +9,16 @@ output:
 rm(list = ls())
 library(knitr)
 opts_chunk$set(echo = TRUE,error = FALSE,warning = FALSE,collapse = TRUE,cache = TRUE,cache.extra = rand_seed, autodep = TRUE)
-library(mosaic)
-library(latticeExtra)
-set.seed(2000)
 ``` 
+
+```{r}
+library(mosaic)
+#library(latticeExtra)
+library(tidyverse)
+set.seed(2000)
+```
+
+
 ## 正規分布
 確率変数 $X$ が ある値 $x$ 以下である確率は $x$ の関数として表され, これを分布関数という. 分布関数は
 $$
@@ -32,13 +38,13 @@ $$
 
 標準正規分布にしたがう確率変数の密度関数は以下で記述できる.
 ```{r}
-plotDist("norm")
+gf_dist("norm")
 ```
 
 
 標準正規分布にしたがう確率変数の分布関数は以下で記述できる.
 ```{r}
-plotDist("norm",kind="cdf")
+gf_dist("norm",kind="cdf")
 ```
 
 $Z$ を標準正規分布にしたがう確率変数とする. `R` で $P[Z<2]$ となる確率を求めるには以下を実行すればよい. `pnorm(2)` もしくはその拡張を実行すればよい.
@@ -49,7 +55,7 @@ xpnorm(2)
 
 $P[-1<Z<2]$ となる確率は以下の赤い部分の面積を求める.
 ```{r}
-plotDist("norm",groups = (x>-1&x<2) ,type="h")
+gf_dist("norm", fill = ~ (x>-1&x<2), geom = "area")
 ```
 
 この面積を求めるには以下を実行すればよい.
@@ -75,8 +81,8 @@ rnorm(10)
 
 乱数を1万個発生させ, ヒストグラムを作成すると密度関数とほぼ同じになる.
 ```{r, fig.keep='last'}
-histogram(~rnorm(10000))
-plotDist("norm",add=TRUE)
+gf_dhistogram(~rnorm(10000)) %>%
+  gf_dist("norm")
 ```
 
 
@@ -90,15 +96,15 @@ $$
 
 たとえば自由度5のカイ二乗分布の密度関数は次のように表記される.
 ```{r}
-plotDist("chisq",df=5)
+gf_dist("chisq",df=5)
 ```
 
 シミュレーションでこのことを確かめる.
 ```{r, fig.keep='last'}
-x <- function(k) {sum(rnorm(k)^2)}
-df<-do(100)*x(5)
-histogram(~x,df)
-plotDist("chisq",df=5,add=TRUE)
+x <- function(k) sum(rnorm(k)^2)
+df<-do(1000)*x(5)
+gf_dhistogram(~x,data=df) %>%
+  gf_dist("chisq",df=5)
 ```
 
 正規分布のときと同様に関数 `pchisq`, `xpchisq`, `qchisq`, `rchisq` が利用可能である.
@@ -118,16 +124,16 @@ $$
 
 たとえば自由度5のティー分布の密度関数は次のように表記される. 赤い線が標準正規分布である.
 ```{r,fig.keep='last'}
-plotDist("t",df=5,xlim=range(-3,3))
-plotDist("norm",add=TRUE,col=2)
+gf_dist("t",df=5,xlim=range(-3,3)) %>% 
+  gf_dist("norm",col="red")
 ```
 
 シミュレーションでこのことを確かめる.
 ```{r, fig.keep='last'}
-x <- function(k) {rnorm(1)/sqrt(sum(rnorm(k)^2)/k)}
-df<-do(100)*x(5)
-histogram(~x,df)
-plotDist("t",df=5,add=TRUE)
+x <- function(k) rnorm(1)/sqrt(sum(rnorm(k)^2)/k)
+df<-do(1000)*x(5)
+gf_dhistogram(~x,data=df) %>%
+ gf_dist("t",df=5)
 ```
 
 同様に関数 `pt`, `xt`, `qt`, `rt` が利用可能である.
@@ -148,7 +154,7 @@ $m_{2}\to\infty$ のとき $m_{1}F\sim\chi^{2}(m_{1})$ である.
 
 たとえば自由度 $(5, 80)$ のエフ分布の密度関数は次のように表記される.
 ```{r}
-plotDist("f",df1=5,df2=80)
+gf_dist("f",df1=5,df2=80)
 ```
 
 また同じ分布にしたがう確率変数 $X$ が $P[X\geq x] =0.95$ となる $x$ は
@@ -160,10 +166,10 @@ xqf(0.95,df1=5,df2=80)
 
 シミュレーションでこのことを確かめる.
 ```{r, fig.keep='last'}
-x <- function(k1,k2) {(sum(rnorm(k1)^2)/k1)/(sum(rnorm(k2)^2)/k2)}
-df<-do(100)*x(5,80)
-histogram(~x,df)
-plotDist("f",df1=8,df2=5,add=TRUE)
+x <- function(k1,k2) (sum(rnorm(k1)^2)/k1)/(sum(rnorm(k2)^2)/k2)
+df<-do(1000)*x(5,80)
+gf_dhistogram(~x,data =df) %>% 
+  gf_dist("f",df1=8,df2=5)
 ```
 
 同様に関数 `pf`, `xf`, `qf`, `rf` が利用可能である.
