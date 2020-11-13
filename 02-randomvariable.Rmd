@@ -167,7 +167,7 @@ sum(P)
 
 シミュレーションは以下で実施する.
 ```{r}
-names <- paste(rep(rownames(P),times=2),rep(colnames(P),each=2),sep="&")
+names <- paste(rep(rownames(P),times=2),rep(colnames(P),each=2),sep=", ")
 sample(names, size= 10, replace = TRUE, P)
 ```
 
