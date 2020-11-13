@@ -95,7 +95,15 @@ gf_bar(~sector,fill=~sector,data=df)
 ```{r}
 gf_barh(~sector,fill=~sector,data=df)
 ```
-最後の`other`が一番上に位置していることに注意.
+最後の`other`が一番上に位置していることに注意. 順序を逆にするには以下とする．
+
+```{r}
+gf_barh(~sector,fill=~sector,data=df) %>%
+  gf_refine(scale_y_discrete(limits = rev(levels(df$sector))))
+```
+
+
+
 
 円グラフはあまり, 学術研究ではもちいないが, 基本グラフィクス `pie` を使えば良い.
 ```{r}
@@ -276,11 +284,12 @@ gf_boxplot(log(wage)~sex,fill=~sex,data=CPS85)
 ひげの長さから外れる値は黒丸で表示される.
 女性には上側に外れ値が男性は下側に外れ値が存在する.
 
-点の散らばりも加えるためには `gf_jitter` も実施する.
+点の散らばりも加えるためには `gf_dotplot` を実施する.
 ```{r}
-gf_boxplot(log(wage)~sex,fill=~sex,data=CPS85,outlier.alpha = 0) %>% gf_jitter(alpha=0.5)
+gf_boxplot(log(wage)~sex,fill=~sex,data=CPS85,outlier.color = NA) %>%
+  gf_dotplot(binaxis = "y",stackdir="center",alpha=0.5,binwidth = 0.1)
 ```
-外れ値が二重にならないように最初のオプションに`outlier.alpha = 0` を加える.
+外れ値が二重にならないように最初のオプションに`outlier.color = NA` を加える.
 
 
 セクターごとの箱ひげ図も可能である.
@@ -293,21 +302,28 @@ gf_boxplot(log(wage)~sex|sector,fill=~sex,data=CPS85)
 データフレイム `CPS85` の変数 `wage` および `educ` を考える.
 どちらも数量変数である.
 
-両者の関係を示すと特性値として **標本共分散**
+両者の関係を示すと特性値として **標本共分散** がある.
+標本サイズ $N$ のデータ $\{x_i,y_i\}_{i=1}^N$ について, 
+標本平均 $\bar{x},\;\bar{y}$ を用いて, 標本共分散 $s_{xy}$ は以下に定義できる．
+
 $$
 s_{xy}=\frac{1}{N-1}\sum_{n=1}^N (x_n-\bar{x})(y_n-\bar{y})
 $$
-がある. これは `R` において `cov` で計算できる.
+
+これは `R` において `cov` で計算できる.
 ```{r}
 cov(wage~educ,data=CPS85)
 # cov(CPS$wage~CPS$educ)
 ```
-で計算できる. また **標本相関係数**
+で計算できる. 
+
+また **標本相関係数** は以下のように定義できる.
 $$
 r_{xy}=\frac{\sum_{n=1}^N (x_n-\bar{x})(y_n-\bar{y})}
 {\sqrt{\sum_{n=1}^N (x_n-\bar{x})^2}\sqrt{\sum_{n=1}^N (y_n-\bar{y})^2}}
 $$
-がある. これは `R` において `cor` で計算できる.
+
+これは `R` において `cor` で計算できる.
 ```{r}
 cor(wage~educ,data=CPS85)
 # cor(CPS85$wage,CPS85$educ)

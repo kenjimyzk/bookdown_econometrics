@@ -10,15 +10,19 @@ output:
 rm(list = ls())
 library(knitr)
 opts_chunk$set(echo = TRUE,error = FALSE,warning = FALSE,collapse = TRUE,cache = TRUE,cache.extra = rand_seed, autodep = TRUE)
-library(mosaic)
-library(latticeExtra)
 set.seed(2000)
 ``` 
-推測統計学において, 母集団を確率変数に考えて,
-標本は独立同一分布にしたがう確率変数とする.
-複数の確率変数である標本の関数を統計量という.
 
-推測統計学が統計量から母集団について何らかの判断をする.
+```{r}
+library(mosaic)
+library(tidyverse)
+```
+
+推測統計学においては, 母集団を確率変数と考えて,
+標本を独立同一分布にしたがう確率変数の実現値と考える.
+独立同一分布にしたがう確率変数である標本の関数を統計量という.
+
+推測統計学は, 統計量から母集団について何らかの判断をする.
 母集団の特徴づけるものを母数という.
 母数についての値を標本から得ることを推定といい, 
 推定のための統計量を推定量という. 
@@ -73,35 +77,23 @@ $$
 このことを `R` で確かめる.平均10, 分散1で確かめる.
 まずは20個のシミュレーションを実施し, 信頼区間の上限と下限を計算する.
 ```{r}
-# siml<-function(N=100,mean=0,sd=1) {
-#   x<-rnorm(N,mean,sd)
-#   m<-mean(x)
-#   ml<-m-1.96*sd/sqrt(N)
-#   mu<-m+1.96*sd/sqrt(N)
-#   return(data.frame(m,ml,mu))
-# }
 set.seed(1234)
 simulation <- do(20) * {
-  N = 100
-  mu = 10
-  sd = 1
-  x <- rnorm(N,mu,sd)
+  size = 100
+  sd=1
+  x <- rnorm(size,mean=10,sd=sd)
   m <- mean(x)
-  ml <- m-1.96 * sd/sqrt(N)
-  mu <- m+1.96 * sd/sqrt(N)
+  ml <- m-1.96 * sd/sqrt(size)
+  mu <- m+1.96 * sd/sqrt(size)
   data.frame(m,ml,mu)
 }
 head(simulation)
 ```
 
 これを図示すると以下になる.
-```{r, fig.keep="last"}
-dotplot(.index~m ,data=simulation, ylab="", pch = 16, cex = 1,
-        xlim=c(min(simulation$ml) - .02, max(simulation$mu) + .02))
-ladd(panel.abline(v = 10, col = 2, lty = 2))
-ladd(panel.segments(simulation$ml, as.numeric(y), 
-                    simulation$mu, as.numeric(y), 
-                    lty = 1, col = "blue"))
+```{r}
+gf_pointrangeh(.index~m+mu+ml,data=simulation,color="blue") %>%
+  gf_vline(xintercept=10,col="red",linetype = 2)
 ```
 
 
@@ -305,4 +297,4 @@ R での計算実行例は以下である.
 # cor.test(~pcs+cesd,data=df)
 cor.test(pcs~cesd,data=df)
 ```
-である. `cor.test(df$pcs,df$cesd)` でも同様の結果になる. 
+`cor.test(df$pcs,df$cesd)` でも同様の結果になる. 
