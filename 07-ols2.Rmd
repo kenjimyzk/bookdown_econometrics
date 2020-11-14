@@ -113,10 +113,11 @@ fn(wt = 3, hp = 10)
 
 作図の際, $hp=10$ のとき, 平均のもとの作図は作図は次のようにする.
 青線が$hp=10$のときであり, 赤線が平均のときである.
-```{r, fig.keep="last"}
-xyplot(mpg~wt,data=mtcars)
-plotFun(fn(wt,hp=10)~wt,add=TRUE)
-plotFun(fn(wt,hp=mhp)~wt,add=TRUE,mhp=with(mtcars,mean(hp)),col=2)
+```{r}
+mhp = with(mtcars,mean(hp))
+gf_point(mpg~wt,data=mtcars) %>%
+  gf_fun(fn(wt,hp=10)~wt,color="blue") %>%
+  gf_fun(fn(wt,hp=mhp)~wt,color="red")
 ```
 
 
@@ -138,7 +139,7 @@ simdata1 <- function(N = 100) {
 ```{r}
 siml <- do(1000) * lm(y~x, data = simdata1(100))
 favstats(~x, data = siml)
-histogram(~x, data = siml,xlim = c(0,2))
+gf_dhistogram(~x, data = siml) %>% gf_lims(x= c(0.5,1.5))
 ```
 
 次に説明変数 `w` を付け加えたシミュレーション結果である.
@@ -146,14 +147,14 @@ histogram(~x, data = siml,xlim = c(0,2))
 ```{r}
 siml <- do(1000) * lm(y~x+w, data = simdata1(100))
 favstats(~x, data = siml)
-histogram(~x, data = siml,xlim = c(0,2))
+gf_histogram(~x, data = siml) %>% gf_lims(x= c(0.5,1.5))
 ```
 分散が大きくなっているが, 不偏である.
 
 説明変数 `w` の基本統計量係数の分布は以下である.
 ```{r}
 favstats(~x, data = siml)
-histogram(~w, data = siml,xlim = c(-1,1))
+gf_histogram(~w, data = siml) %>% gf_lims(x= c(-1,1))
 ```
 無関係な説明変数の分布は0の周りで不偏である.
 両結果をまとめると, 多少推定が非効率になるが,
@@ -177,16 +178,18 @@ simdata2 <- function(N = 100) {
 }
 ```
 
-正しい重回帰モデルの変数 $x$ の傾きの分布は以下である.
+正しい重回帰モデルの変数 $x$ の傾きの分布は以下であり, 不偏である.
 ```{r}
 siml <- do(1000) * lm(y~x + w,data=simdata2(100))
-histogram(~x, data = siml,xlim = c(0,2))
+gf_dhistogram(~x, data = siml) %>% gf_lims(x= c(0,3)) %>%
+  gf_vline(xintercept=1,color="red")
 ```
 
-重回帰モデルは不偏でなく正のバイアスが発生している.
+単回帰モデルは不偏でなく正のバイアスが発生している.
 ```{r}
 siml <- do(1000) * lm(y~x,data=simdata2(100))
-histogram(~x, data = siml, xlim = c(1,3))
+gf_dhistogram(~x, data = siml) %>% gf_lims(x= c(0,3)) %>%
+  gf_vline(xintercept=1,color="red")
 ```
 
 
