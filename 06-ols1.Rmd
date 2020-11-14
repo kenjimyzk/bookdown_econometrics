@@ -117,9 +117,9 @@ fn(speed = 30)
 ```
 
 作図は以下のようにする.
-```{r, fig.keep='last'}
-xyplot(dist~speed, data = cars)
-plotFun(fn, add = TRUE)
+```{r}
+gf_point(dist~speed, data = cars) %>%
+  gf_fun(fn)
 ```
 
 もしくは `plotModel` を使う.
@@ -148,35 +148,37 @@ $$
 また他の線形不偏推定量のなかで最も分散が小さいことも知られている.
 
 この性質をシミュレーションで試してみよう.
-仮想的に $\alpha = \beta =1$ のモデルを考え, サンプル100の回帰分析を1000回繰り返す.
+仮想的に $\alpha = \beta =1$ のモデルを考える.
 ```{r}
 simdata <- function(N = 100) {
   x <- rnorm(N, mean = 10, sd = 1)
   y <- 1 + x + rnorm(N)
   data.frame(x,y)
 }
-siml0 <- do(1000) * lm(y~x,data = simdata())
 ```
 
-サンプルサイズが$N=100$ のときの最小二乗法による傾きの推定量をヒストグラで表す.
+サンプル100の回帰分析を1000回繰り返す.
+のときの最小二乗法による傾きの推定量をヒストグラで表す.
 ```{r}
-histogram(~x, data = siml0,xlim=c(0,2))
+siml0 <- do(1000) * lm(y~x,data = simdata())
+gf_dhistogram(~x, data = siml0,color="red") %>%
+  gf_lims(x = c(0.5,1.5))
 ```
 このとき推定が1のまわりでばらついていることが確認できる. (不偏性)
 
 サンプルサイズを $N=100$ から $N=500$ にする.
 ```{r}
 siml1 <-do(1000) * lm(y~x,data=simdata(500))
-histogram(~x, data = siml1,xlim=c(0,2))
+gf_dhistogram(~x, data = siml1,color="blue") %>%
+  gf_lims(x = c(0.5,1.5)) 
 ```
 前の図と比べ横軸の長さが同じで, 縦軸が違っていることに注意すると,
 推定のばらつきが小さくなっていることを確認できる. (一致性)
 
 2つの分布を同時に表示すると以下になる.
 ```{r,fig.keep = "last"}
-densityplot(~x, data=siml0, plot.points = FALSE, 
-            xlim=c(0.5,1.5),ylim=c(0,6)) +
-densityplot(~x, data=siml1, plot.points = FALSE,col=2)
+gf_density(~x,data=siml0,color="red") %>%
+  gf_density(~x,data=siml1,color="blue")
 ```
 
 ## ティー検定
@@ -218,16 +220,6 @@ coef(summary(fm))
 ```
 
 標準化した場合の分布をみてみる.
-```{r}
-# tvalue  <- function(data) {  
-#   fm <- lm(y~x, data = data)
-#   estimate <- summary(fm)$coef[2,1]
-#   se <- summary(fm)$coef[2,2]
-#   tval <- (estimate - 1)/se
-#   data.frame(estimate, se, tval)
-# }
-# siml <- do(1000) * tvalue(simdata(100))
-```
 
 ```{r}
 siml <- do(1000) * {
@@ -239,9 +231,10 @@ siml <- do(1000) * {
 
 
 
-```{r, fig.keep='last'}
-histogram(~tval, data = siml,xlim = c(-4,4))
-plotDist("t", df = 98, add = TRUE)
+```{r}
+gf_dhistogram(~tval, data = siml) %>%
+  gf_dist("t", df = 98) %>%
+  gf_lims(x=c(-4,4))
 ```
 
 ## 定数項なしモデル
@@ -254,9 +247,8 @@ summary(fm0)
 定数項ありモデルと定数項なしモデルの比較の作図は以下で実施する.
 ```{r, fig.keep='last'}
 fn0 <- makeFun(fm0)
-xyplot(dist~speed, data = cars, xlim = c(0,30))
-plotFun(fn, add = TRUE)
-plotFun(fn0, add = TRUE, col = 2)
+gf_point(dist~speed, data = cars) %>%
+  gf_fun(fn,color="red") %>% gf_fun(fn0,color="blue")
 ```
 
 定数項なしモデルは以下でも実施できる.
@@ -271,15 +263,15 @@ coef(fm0) == coef(fm1)
 変数を対数変換して分析がおこなわれることがある.
 それによって解釈が変わることがある.
 
-|被説明変数|説明変数  |解尺>                                               |
+|被説明変数|説明変数  |解釈                                               |
 |----------|----------|---------------------------------------------------|
 |$y$       |$x$       |$x$ が1単位増えたとき, $y$ が $\beta$ 単位増える.  |
 |$y$       |$\log(x)$ |$x$ が1%増えたとき, $y$ が $\beta/100$ 単位増える. |
 |$\log(y)$ |$x$       |$x$ が1単位増えたとき, $y$ が $100\beta$ % 増える. |
 |$\log(y)$ |$\log(x)$ |$x$ が1%増えたとき, $y$ が $\beta$ % 増える.       |
 
-
-3つのケースに分けて計算方法と図示の方法を解説する.
+最初のケースはすでに図示してある.
+残り3つのケースに分けて計算方法と図示の方法を解説する.
 
 ### 説明変数が対数
 説明変数が対数のときの以下のように実施する.
@@ -289,10 +281,10 @@ summary(fm)
 ```
 
 作図は以下のようにする.
-```{r, fig.keep='last'}
+```{r}
 fn <- makeFun(fm)
-xyplot(dist~speed, data =cars)
-plotFun(fn, add = TRUE)
+gf_point(dist~speed, data = cars) %>%
+  gf_fun(fn)
 ```
 
 この場合 `plotModel` は使える.
@@ -302,11 +294,11 @@ plotModel(fm)
 
 横軸を対数にして線形モデルにするには以下のようする.
 ```{r, fig.keep='last'}
-xyplot(dist~log(speed), data = cars)
-plotFun(fn(exp(x))~x, add = TRUE)
+gf_point(dist~log(speed), data = cars) %>%
+  gf_fun(fn(exp(x))~x)
 ```
 
-なお `plotModel` は使えない.
+ただし `plotModel` は使えない.
 
 ### 被説明変数が対数
 説明変数が対数のときの以下のように実施する.
@@ -316,21 +308,21 @@ summary(fm)
 ```
 
 作図は以下のようにする.
-```{r, fig.keep='last'}
+```{r}
 fn <- makeFun(fm)
-xyplot(dist~speed, data = cars)
-plotFun(fn, add = TRUE)
+gf_point(dist~speed, data = cars) %>%
+  gf_fun(fn)
 ```
 
-なお `plotModel` は使えない.
+ただし `plotModel` は使えない.
 
 縦軸を対数にして線形モデルにするには以下のようにする.
-```{r, fig.keep='last'}
-xyplot(log(dist)~speed, data = cars)
-plotFun(log(fn(x))~x, add = TRUE)
+```{r}
+gf_point(log(dist)~speed, data = cars) %>%
+  gf_fun(log(fn(x))~x)
 ```
 
-なお `plotModel` は使えない.
+ただし `plotModel` は使えない.
 
 ### 両変数が対数
 両変数が対数のときの以下のように実施する.
@@ -340,26 +332,26 @@ summary(fm)
 ```
 
 作図は以下のようにする.
-```{r, fig.keep='last'}
+```{r}
 fn <- makeFun(fm)
-xyplot(dist~speed, data = cars)
-plotFun(fn, add = TRUE)
+gf_point(dist~speed, data = cars) %>%
+  gf_fun(fn)
 ```
 
 なお `plotModel` は使えない.
 
 両軸を対数にして線形モデルにするには以下のようにする.
-```{r, fig.keep='last'}
-xyplot(log(dist)~log(speed),data = cars)
-plotFun(log(fn(exp(x)))~x,add = TRUE)
+```{r}
+gf_point(log(dist)~log(speed), data = cars) %>%
+  gf_fun(log(fn(exp(x)))~x)
 ```
 
 なおデータ自体を対数変換して表することもできる.
-```{r, fig.keep='last'}
+```{r}
 fm <- lm(dist~speed, data = log(cars))
 fn <- makeFun(fm)
-xyplot(dist~speed, data = log(cars))
-plotFun(fn, add = TRUE)
+gf_point(dist~speed, data = log(cars)) %>%
+  gf_fun(fn)
 ```
 
 この場合 `plotModel` は使える.
