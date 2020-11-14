@@ -11,11 +11,11 @@ library(knitr)
 opts_chunk$set(echo = TRUE,error = FALSE,warning = FALSE,collapse = TRUE,cache = TRUE,cache.extra = rand_seed, autodep = TRUE)
 ``` 
 
-```{r message=FALSE, warning=FALSE}
+```{r}
 set.seed(2000)
 library(AER)
 library(mosaic)
-library(latticeExtra)
+#library(latticeExtra)
 library(broom)
 ```
 
@@ -41,7 +41,7 @@ inspect(df)
  
 作図すると以下である.
 ```{r}
-xyplot(log(subs)~log(citeprice),data=df)
+gf_point(log(subs)~log(citeprice),data=df)
 ```
 
 ## 正規性の仮定について
@@ -62,9 +62,9 @@ siml <- do(1000) * {lm(y~x,data=simdata(100)) %>% tidy() %>%
 ```
 
 
-```{r, fig.keep = "last"}
-histogram(~tval, data= siml)
-plotDist("norm",add = TRUE)
+```{r}
+gf_dhistogram(~tval, data= siml) %>% 
+  gf_dist("norm")
 ```
 
 ここの係数ゼロのティー検定について, ライブラリ `AER` を導入して `coeftest` を用いればよい.
@@ -96,8 +96,6 @@ anova(fm0,fm1)
 制約付きの回帰分析を実行し, その残差を制約なしのモデルの説明変数に回帰する.
 その決定係数に観測数を掛けた統計量が自由どが制約の数のカイ二乗分布にしたがうことが知られている.
 ```{r}
-# lmt <- lm(I(resid(fm0))~log(age)*log(citeprice),data=df)
-# (lmt <- nrow(df)*summary(lmt)$r.squared)
 lmt <- lm(I(resid(fm0))~log(age)*log(citeprice),data=df) %>%
   rsquared() * nrow(df)
 lmt
@@ -133,15 +131,15 @@ fm_w1 <- lm(log(subs)~log(citeprice), data=df,weight = 1/citeprice)
 summary(fm_w1)
 ```
 
-```{r, fig.keep="last"}
+```{r}
 fn <- makeFun(fm0)
 fn_w1 <- makeFun(fm_w1)
 fm_w2 <- lm(log(subs)~log(citeprice), data=df,weight = 1/citeprice^2)
 fn_w2 <- makeFun(fm_w2)
-xyplot(log(subs)~log(citeprice),data = df)
-plotFun(log(fn(exp(x)))~x,add = TRUE)
-plotFun(log(fn_w1(exp(x)))~x,add = TRUE, col = 2)
-plotFun(log(fn_w2(exp(x)))~x,add = TRUE, col = 3)
+gf_point(log(subs)~log(citeprice),data = df) %>%
+  gf_fun(log(fn(exp(x)))~x,color="blue") %>%
+  gf_fun(log(fn_w1(exp(x)))~x,color="red") %>%
+  gf_fun(log(fn_w2(exp(x)))~x,color = "green")
 ```
 
 
@@ -194,13 +192,13 @@ siml <- do(1000) * {lm(y~x,data=simdata(100)) %>% tidy() %>%
     filter(term == "x") %>% select(estimate, std.error) %>%
     mutate(tval = (estimate-1)/std.error)
   }
-
 ```
 
 通常の回帰分析を実施すると, 係数が不偏であっても, 正しく分散が推計できていないことが明らかである.
-```{r, fig.keep = "last"}
-histogram(~tval, data = siml, xlim = c(-4,4), ylim=c(0,0.5))
-plotDist("norm", add = TRUE)
+```{r}
+gf_dhistogram(~tval, data = siml) %>%
+  gf_lims(x = c(-4,4),y=c(0,0.5)) %>%
+  gf_dist("norm")
 ```
 
 加重最小自乗法を実施したシミュレーションを実施する.
@@ -213,12 +211,13 @@ siml <- do(1000) * {
 ```
 
 加重最小自乗法を実施すると, 正規分布に近似できる.
-```{r,fig.keep="last"}
-histogram(~tval, data = siml, xlim = c(-4,4), ylim=c(0,0.5))
-plotDist("norm",add=TRUE)
+```{r,fig}
+gf_dhistogram(~tval, data = siml) %>%
+  gf_lims(x = c(-4,4),y=c(0,0.5)) %>%
+  gf_dist("norm")
 ```
 
-
+ロバスト分散を利用したシミュレーションを実施する.
 ```{r}
 siml <- do(1000) * {lm(y~x,data=simdata(100)) %>%
     coeftest(vcov=hccm) %>% tidy() %>%
@@ -228,9 +227,10 @@ siml <- do(1000) * {lm(y~x,data=simdata(100)) %>%
 ```
 
 ロバスト分散を利用した場合, 正規分布に近似できる.
-```{r, fig.keep = "last"}
-histogram(~tval, data = siml, xlim = c(-4,4), ylim = c(0,0.5))
-plotDist("norm",add = TRUE)
+```{r}
+gf_dhistogram(~tval, data = siml) %>%
+  gf_lims(x = c(-4,4),y=c(0,0.5)) %>%
+  gf_dist("norm")
 ```
 
 
@@ -246,8 +246,6 @@ BP検定は帰無仮説が分散均一で, 対立仮説が分散が説明変数�
 残差の自乗を被説明変数として回帰分析をおこない,
 その決定係数に観測数をかけたものが検定統計量となる.
 ```{r}
-# bpt <- lm(I(resid(fm1)^2)~log(age)*log(citeprice),data=df)
-# (bpt <- nrow(df)*summary(bpt)$r.squared)
 bpt <- lm(I(resid(fm1)^2)~log(age)*log(citeprice), data=df) %>%
   rsquared() * nrow(df)
 bpt
@@ -268,8 +266,6 @@ bptest(fm1)
 被説明変数の予測値を使って計算することがある.
 そのときホワイトテストは以下で実施する.
 ```{r}
-# wht <- lm(I(resid(fm1)^2)~fitted(fm1)+I(fitted(fm1)^2),data = df)
-# (wht <- nrow(df)*summary(wht)$r.squared)
 wht <- lm(I(resid(fm1)^2)~fitted(fm1)+I(fitted(fm1)^2),data = df) %>%
   rsquared() * nrow(df)
 wht

@@ -15,7 +15,6 @@ opts_chunk$set(echo = TRUE,error = FALSE,warning = FALSE,collapse = TRUE,cache =
 library(AER)
 library(mosaic)
 library(tidyverse)
-library(stargazer)
 library(texreg)
 set.seed(2000)
 ```
