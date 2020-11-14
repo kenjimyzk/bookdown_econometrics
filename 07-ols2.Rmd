@@ -9,12 +9,16 @@ output:
 rm(list = ls())
 library(knitr)
 opts_chunk$set(echo = TRUE,error = FALSE,warning = FALSE,collapse = TRUE,cache = TRUE,cache.extra = rand_seed, autodep = TRUE)
+``` 
+
+```{r}
 library(AER)
 library(mosaic)
-library(latticeExtra)
+library(tidyverse)
 library(stargazer)
+library(texreg)
 set.seed(2000)
-``` 
+```
 
 
 ## 最小二乗推定量
@@ -114,7 +118,7 @@ fn(wt = 3, hp = 10)
 作図の際, $hp=10$ のとき, 平均のもとの作図は作図は次のようにする.
 青線が$hp=10$のときであり, 赤線が平均のときである.
 ```{r}
-mhp = with(mtcars,mean(hp))
+mhp <- with(mtcars,mean(hp))
 gf_point(mpg~wt,data=mtcars) %>%
   gf_fun(fn(wt,hp=10)~wt,color="blue") %>%
   gf_fun(fn(wt,hp=mhp)~wt,color="red")
@@ -139,7 +143,8 @@ simdata1 <- function(N = 100) {
 ```{r}
 siml <- do(1000) * lm(y~x, data = simdata1(100))
 favstats(~x, data = siml)
-gf_dhistogram(~x, data = siml) %>% gf_lims(x= c(0.5,1.5))
+gf_dhistogram(~x, data = siml) %>% gf_lims(x= c(0.5,1.5)) %>%
+  gf_vline(xintercept=1,color="red")
 ```
 
 次に説明変数 `w` を付け加えたシミュレーション結果である.
@@ -147,15 +152,19 @@ gf_dhistogram(~x, data = siml) %>% gf_lims(x= c(0.5,1.5))
 ```{r}
 siml <- do(1000) * lm(y~x+w, data = simdata1(100))
 favstats(~x, data = siml)
-gf_histogram(~x, data = siml) %>% gf_lims(x= c(0.5,1.5))
+gf_histogram(~x, data = siml) %>% gf_lims(x= c(0.5,1.5)) %>%
+  gf_vline(xintercept=1,color="red")
 ```
+
 分散が大きくなっているが, 不偏である.
 
 説明変数 `w` の基本統計量係数の分布は以下である.
 ```{r}
-favstats(~x, data = siml)
-gf_histogram(~w, data = siml) %>% gf_lims(x= c(-1,1))
+favstats(~w, data = siml)
+gf_histogram(~w, data = siml) %>% gf_lims(x= c(-1,1)) %>%
+  gf_vline(xintercept=0,color="red")
 ```
+
 無関係な説明変数の分布は0の周りで不偏である.
 両結果をまとめると, 多少推定が非効率になるが,
 母集団モデルと無関係の変数を説明変数に加えても問題はおきない.
@@ -209,10 +218,9 @@ fm <- lm( mpg ~ wt + I(wt^2), data = mtcars)
 summary(fm)
 ```
 
-```{r, fig.keep="last"}
+```{r}
 fn<-makeFun(fm)
-xyplot(mpg~wt,data=mtcars)
-plotFun(fn(wt)~wt,add=TRUE)
+gf_point(mpg~wt,data=mtcars) %>% gf_fun(fn(wt)~wt)
 ```
 
 
@@ -223,12 +231,12 @@ summary(fm)
 ```
 
 
-```{r, fig.keep="last"}
-fn <- makeFun(fm)
-xyplot(mpg~wt, data = mtcars, group = factor(cyl))
-plotFun(fn(wt, cyl = 4)~wt, col = 1, add = TRUE)
-plotFun(fn(wt, cyl = 6)~wt, col = 2, add = TRUE)
-plotFun(fn(wt, cyl = 8)~wt, col = 3, add = TRUE)
+```{r}
+fn<-makeFun(fm)
+gf_point(mpg~wt,color=~factor(cyl),data=mtcars) %>%
+  gf_fun(fn(wt, cyl = "4")~wt, color="red") %>%
+  gf_fun(fn(wt, cyl = "6")~wt, color="green") %>%
+  gf_fun(fn(wt, cyl = "8")~wt, color="blue")
 ```
 
 ### 交差項
@@ -242,12 +250,12 @@ fm0 <- lm( mpg ~ wt * factor(cyl), data = mtcars)
 summary(fm0)
 ```
 
-```{r, fig.keep="last"}
+```{r}
 fn <- makeFun(fm)
-xyplot(mpg~wt,data = mtcars,group = factor(cyl))
-plotFun(fn(wt, cyl = 4)~wt, col = 1, add = TRUE)
-plotFun(fn(wt, cyl = 6)~wt, col = 2, add = TRUE)
-plotFun(fn(wt, cyl = 8)~wt, col = 3, add = TRUE)
+gf_point(mpg~wt,color=~factor(cyl),data=mtcars) %>%
+  gf_fun(fn(wt, cyl = "4")~wt, color="red") %>%
+  gf_fun(fn(wt, cyl = "6")~wt, color="green") %>%
+  gf_fun(fn(wt, cyl = "8")~wt, color="blue")
 ```
 
 ## エフ検定
@@ -333,8 +341,14 @@ summary(fm1)$fstatistic
 
 ## 作表
 基本統計量:
-```{r, results='asis'}
-mtcars %>% select(mpg, wt, hp, cyl) %>% stargazer(type = "html")
+```{r}
+mtcars %>% select(mpg, wt, hp, cyl) %>% gather(key,value) %>%
+  group_by(key) %>%
+  summarize(mean = mean(value),
+            sd=sd(value),
+            max = max(value),
+            min = min(value),
+            n = n()) %>% kable()
 ```
 
 
@@ -344,8 +358,9 @@ fm2 <- lm(mpg ~ wt * hp, data = mtcars)
 fm3 <- update(fm2, .~. + factor(cyl))
 ```
 
-回帰分析の比較表
+回帰分析の比較表はパッケージ `texreg` のコマンド `htmlreg` を用いればよい.
+
 ```{r, results='asis'}
-stargazer(fm1,fm2,fm3,type = "html")
+htmlreg(list(fm1,fm2,fm3))
 ```
 
