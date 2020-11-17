@@ -79,22 +79,6 @@ $$
 Cov[X,U]=V[U]=1, Cov[X,Z]=V[Z]=4, Corr[X,Z]^2=4/5
 $$
 
-
-```{r, eval = FALSE}
-# coef_iv <- function(data) {  
-#   fm <- lm(y~x, data = data)
-#   estimate <- coeftest(fm)[2,1]
-#   se <- coeftest(fm)[2,2]
-#   tval <- (estimate - 1)/se
-#   fm_iv <- ivreg(y~x|z,data=data)
-#   estimate_iv <- coeftest(fm_iv)[2,1]
-#   se_iv <- coeftest(fm_iv)[2,2]
-#   tval_iv <- (estimate_iv - 1)/se_iv
-#   data.frame(estimate, se, tval,estimate_iv,se_iv,tval_iv)
-# }
-# siml_iv <- do(500) * coef_iv(simdata1())
-```
-
 ```{r}
 siml_iv <- do(500) * {simdata1() %>% {
   df_ols <- lm(y~x,data=.) %>% tidy() %>%
@@ -116,12 +100,14 @@ siml_iv %>% dplyr::select(estimate, estimate_iv) %>%
 
 最小二乗法による推定値のヒストグラムは以下である.
 ```{r}
-histogram(~estimate, data = siml_iv,xlim=c(0,2))
+gf_histogram(~estimate, data = siml_iv) %>%
+  gf_lims(x=c(0.5,1.5)) %>% gf_vline(xintercept = 1)
 ```
 
 操作変数法による推定値のヒストグラムは以下である.
 ```{r}
-histogram(~estimate_iv, data = siml_iv,xlim=c(0,2))
+gf_histogram(~estimate_iv, data = siml_iv) %>% 
+  gf_lims(x=c(0.5,1.5)) %>% gf_vline(xintercept = 1)
 ```
 
 ## 2段階最小二乗法

@@ -188,7 +188,8 @@ simdata <- function(N = 100) {
   data.frame(x,y)
 }
 
-siml <- do(1000) * {lm(y~x,data=simdata(100)) %>% tidy() %>%
+siml <- do(1000) * {
+  lm(y~x,data=simdata(100)) %>% tidy() %>%
     filter(term == "x") %>% select(estimate, std.error) %>%
     mutate(tval = (estimate-1)/std.error)
   }
