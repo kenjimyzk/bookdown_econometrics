@@ -1,7 +1,5 @@
 ---
-output: 
-  html_document:default
-  html_notebook:default
+output: html_document
 ---
 
 # 現代的仮定のもとでの最小二乗法
@@ -276,7 +274,7 @@ wht
 
 もしくは以下を実行する.
 ```{r}
-bptest(fm1,~fitted(fm1)+I(fitted(fm1)^2))
+#bptest(fm1,~fitted(fm1)+I(fitted(fm1)^2))
 ```
 
 このように分散均一性は検定することが可能であるが, そもそも分散均一が疑われる場合はロバスト分散で推定するので十分であるため,

@@ -139,12 +139,14 @@ tally(~sector|sex,data=CPS85)
 ```{r}
 gf_bar(~sector,fill=~sex,data=CPS85)
 ```
+
 同じパネルに男女ごとに重ねたヒストグラムになる.
 
 オプション `position = "dodge"` を追加することで, 並べることもできる出来る.
 ```{r}
 gf_bar(~sector,fill=~sex,position = "dodge",data=CPS85)
 ```
+
 ただsectorがconstのときの女性がゼロなので表記がおかしくなっている.
 
 
@@ -158,12 +160,6 @@ gf_bar(~sector,fill=~sex,position = "fill",data=CPS85)
 ```{r}
 gf_barh(~sector|sex,fill=~sex,data=CPS85)
 ```
-
-重ねることで見にくくなっているので横にする．
-```{r}
-gf_barh(~sector|sex,fill=~sex,data=CPS85)
-```
-
 
 ## 数量変数
 データフレイム `CPS85` の変数 `wage` を考える.
@@ -246,10 +242,12 @@ favstats(log(wage)~sex,data=CPS85)
 favstats(~log(wage)|sex,data=CPS85)
 ```
 
-ヒストグラムによる作図は以下である.
+ヒストグラムによる作図は以下である. 
 ```{r}
 gf_histogram(~log(wage),fill=~sex,data=CPS85)
 ```
+
+色別に積み上がっている.
 
 別々のパネルで描くと以下になる.
 ```{r}
@@ -261,10 +259,10 @@ gf_histogram(~log(wage)|sex,fill=~sex,data=CPS85)
 gf_density(~log(wage),fill=~sex,alpha=0.5, data=CPS85)
 ```
 
+つみ上げるにはオプション `position = "stack"` をつける必要がある.
 ```{r}
-gf_density(~log(wage),fill=~sex,position = "stack", data=CPS85)
+gf_density(~log(wage),fill=~sex, position = "stack", data=CPS85)
 ```
-
 
 別々のパネルで描くと以下になる.
 ```{r}
@@ -319,7 +317,7 @@ cov(wage~educ,data=CPS85)
 
 また **標本相関係数** は以下のように定義できる.
 $$
-r_{xy}=\frac{\sum_{n=1}^N (x_n-\bar{x})(y_n-\bar{y})}
+r_{xy}=\frac{s_{xy}}{s_x s_y}=\frac{\sum_{n=1}^N (x_n-\bar{x})(y_n-\bar{y})}
 {\sqrt{\sum_{n=1}^N (x_n-\bar{x})^2}\sqrt{\sum_{n=1}^N (y_n-\bar{y})^2}}
 $$
 
@@ -339,6 +337,7 @@ gf_point(log(wage)~educ,data=CPS85)
 ```{r}
 gf_point(log(wage)~educ,color=~sex,alpha=0.5,data=CPS85)
 ```
+
 データが重なっているため, `alpha=0.5` と半透明としているが, それでも上手く表示されていない.
 
 
