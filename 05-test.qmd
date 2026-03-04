@@ -82,7 +82,7 @@ head(simulation)
 
 これを図示すると以下になる.
 ```{r}
-gf_pointrangeh(.index ~ m + mu + ml, data = simulation, color = "blue") |>
+gf_pointrange(.index ~ m + mu + ml, data = simulation, color = "blue") |>
   gf_vline(xintercept = 10, col = "red", linetype = 2)
 ```
 

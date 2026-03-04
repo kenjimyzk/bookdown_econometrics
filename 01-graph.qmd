@@ -38,17 +38,32 @@ sort(tally(~sector, data = CPS85), decreasing = TRUE)
 ``
 `
 5 番目の「その他 (other)」を最後にするには以下のようにする.
-```{r}
+`
+``
+{
+  r
+}
 (tab <- sort(tally(~sector, data = CPS85), decreasing = TRUE)[c(1:4, 6:8, 5)])
 ```
 
 もしくはもとのデータで順序をつけるとよい.
 ```{r}
 df <- CPS85 |>
-  mutate(sector = factor(sector,
-                         levels = c("prof", "clerical", "service", "manuf",
-                                    "manag", "sales", "const", "other")))
-
+  mutate(
+    sector = factor(
+      sector,
+      levels = c(
+        "prof",
+        "clerical",
+        "service",
+        "manuf",
+        "manag",
+        "sales",
+        "const",
+        "other"
+      )
+    )
+  )
 tally(~sector, data = df)
 ```
 
@@ -81,13 +96,13 @@ gf_bar(~sector, fill = ~sector, data = df)
 
 縦と横を変更するには次のようにする.
 ```{r}
-gf_barh(~sector, fill = ~sector, data = df)
-`
-``
-最後の`other`が一番上に位置していることに注意. 順序を逆にするには以下とする．
+gf_bar(~sector, fill = ~sector, data = df)
+```
+
+最後の `other` が一番上に位置していることに注意. 順序を逆にするには以下とする．
 
 ```{r}
-gf_barh(~sector, fill = ~sector, data = df) |>
+gf_bar(~sector, fill = ~sector, data = df) |>
   gf_refine(scale_y_discrete(limits = rev(levels(df$sector))))
 ```
 
@@ -142,7 +157,7 @@ gf_bar(~sector, fill = ~sex, position = "fill", data = CPS85)
 
 別々のパネルで表すには以下を実行するればよい.
 ```{r}
-gf_barh(~ sector | sex, fill = ~sex, data = CPS85)
+gf_bar(~ sector | sex, fill = ~sex, data = CPS85)
 ```
 
 ## 数量変数
@@ -157,8 +172,8 @@ $$
 は以下で計算できる.
 ```{r}
 mean(~wage, data = CPS85)
-``
-`
+```
+
 標本分散
 $$
 s_x^2=\frac{1}{N-1}\sum_{n=1}^N (x_n-\bar{x})^2
@@ -166,8 +181,7 @@ $$
 は以下で計算できる.
 ```{r}
 var(~wage, data = CPS85)
-`
-``
+```
 その平方根である標準偏差 $s_x$ は以下で計算できる.
 ```{r}
 sd(~wage, data = CPS85)
@@ -176,8 +190,8 @@ sd(~wage, data = CPS85)
 これらを含めた特性値は `favstats` でまとめて表記できる.
 ```{r}
 favstats(~wage, data = CPS85)
-``
-`
+```
+
 ここで min は最小値を意味し, max は最大値を意味し, n は観測数を意味する.
 また median は中央値を意味し, データを大きい順にならべて真ん中に来る値である.
 Q1 は第 1 四分位点であり, 25%に来る値であり, 
@@ -187,17 +201,23 @@ Q4 は第 3 四分位点であり, 75%に来る値である.
 
 対数変換した変数だと中央値と平均値がほぼ同じで偏りがないことが示唆される.
 ```{r}
-favstats(~log(wage), data = CPS85)
+favstats(~ log(wage), data = CPS85)
 ```
 
 ### 作図
 数量変数の作図はヒストグラムが代表的である.
 ```{r}
 gf_histogram(~wage, data = CPS85)
-`
-``
+```
+
 すこし左に偏っているので対数変換したデータを考える.
 ```{r}
+gf_histogram(~ log(wage), data = CPS85)
+```
+
+オプション  `binwidth` を用いて幅を調節できる.
+```{r}
+gf_histogram(~ log(wage), binwidth = 0.5, data = CPS85)
 gf_histogram(~ log(wage), data = CPS85)
 ```
 
@@ -274,12 +294,19 @@ gf_boxplot(log(wage) ~ sex, fill = ~sex, data = CPS85)
 ```{r}
 gf_boxplot(log(wage) ~ sex, fill = ~sex, data = CPS85, outlier.color = NA) |>
   gf_dotplot(binaxis = "y", stackdir = "center", alpha = 0.5, binwidth = 0.1)
-``
 `
-外れ値が二重にならないように最初のオプションに`outlier.color = NA` を加える.
+`
+`
+外れ値が二重にならないように最初のオプションに`
+outlier.color = NA
+` を加える.
 
 セクターごとの箱ひげ図も可能である.
-```{r}
+`
+``
+{
+  r
+}
 gf_boxplot(log(wage) ~ sex | sector, fill = ~sex, data = CPS85)
 ```
 
@@ -335,11 +362,16 @@ gf_point(log(wage) ~ educ | sex, color = ~sex, alpha = 0.5, data = CPS85)
 ```{r}
 CPS85 |> select(wage, educ, exper) |> cov()
 `
-``
+`
+`
 対角要素は分散である.
 
 3 つの相関係数は次のように実行する.
-```{r}
+`
+``
+{
+  r
+}
 CPS85 |> select(wage, educ, exper) |> cor()
 ```
 

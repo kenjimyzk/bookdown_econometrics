@@ -15,6 +15,7 @@ book:
     - 02-randomvariable.qmd
     - 03-binominal.qmd
     - 04-normal.qmd
+#    - 15-randomvariable2.qmd
     - 05-test.qmd
     - 06-ols1.qmd
     - 07-ols2.qmd
@@ -22,7 +23,6 @@ book:
     - 09-ivreg.qmd
     - 10-ml.qmd
     - 14-timeseries.qmd
-    - 15-randomvariable2.qmd
     - 16-panel.qmd
     - 99-references.qmd
 
@@ -39,18 +39,18 @@ format:
       opts_chunk:
         dev: "png"
 
-  # pdf:
-  #   pdf-engine: lualatex
-  #   documentclass: ltjsbook
-  #   classoption: [lualatex, ja=standard]
-  #   fig-align: "center"
-  #   include-in-header:
-  #     - preamble.tex
-  #   # include-after-body:
-  #   #   - afterbody.tex
-  #   knitr:
-  #     opts_chunk:
-  #       dev: "png"
+  pdf:
+    pdf-engine: lualatex
+    documentclass: ltjreport
+    classoption: [lualatex, ja=standard]
+    fig-align: "center"
+    include-in-header:
+      - preamble.tex
+    # include-after-body:
+    #   - afterbody.tex
+    knitr:
+      opts_chunk:
+        dev: "png"
 
 execute:
   echo: true

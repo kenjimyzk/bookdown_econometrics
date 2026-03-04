@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>9&nbsp; 現代的仮定のもとでの最小二乗法 – Rによる統計分析</title>
+<title>8&nbsp; 現代的仮定のもとでの最小二乗法 – Rによる統計分析</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -149,7 +149,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./08-ols3.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">現代的仮定のもとでの最小二乗法</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./08-ols3.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">現代的仮定のもとでの最小二乗法</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
@@ -177,85 +177,79 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Rによる統計分析</span></span></a>
+ <span class="menu-text">はじめに</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./01-graph.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">記述統計とグラフ</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">記述統計とグラフ</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02-randomvariable.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">確率変数</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">確率変数</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03-binominal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">二項分布</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">二項分布</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./04-normal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">正規分布およびその拡張</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">正規分布およびその拡張</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./05-test.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">推測統計</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">推測統計</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./06-ols1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">単回帰</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">単回帰</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./07-ols2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">重回帰</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">重回帰</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./08-ols3.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">現代的仮定のもとでの最小二乗法</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">現代的仮定のもとでの最小二乗法</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./09-ivreg.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">操作変数法</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">操作変数法</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./10-ml.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">最尤法</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">最尤法</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./14-timeseries.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">時系列分析</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./15-randomvariable2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">各種確率分布</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">時系列分析</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./16-panel.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">パネルデータ分析</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">パネルデータ分析</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -274,10 +268,10 @@ window.Quarto = {
     <h2 id="toc-title">目次</h2>
    
   <ul class="collapse">
-  <li><a href="#正規性の仮定について" id="toc-正規性の仮定について" class="nav-link active" data-scroll-target="#正規性の仮定について"><span class="header-section-number">9.1</span> 正規性の仮定について</a></li>
-  <li><a href="#誤差項と説明変数が独立の仮定について" id="toc-誤差項と説明変数が独立の仮定について" class="nav-link" data-scroll-target="#誤差項と説明変数が独立の仮定について"><span class="header-section-number">9.2</span> 誤差項と説明変数が独立の仮定について</a></li>
-  <li><a href="#分散不均一のシミュレーション" id="toc-分散不均一のシミュレーション" class="nav-link" data-scroll-target="#分散不均一のシミュレーション"><span class="header-section-number">9.3</span> 分散不均一のシミュレーション</a></li>
-  <li><a href="#分散均一の検定" id="toc-分散均一の検定" class="nav-link" data-scroll-target="#分散均一の検定"><span class="header-section-number">9.4</span> 分散均一の検定</a></li>
+  <li><a href="#正規性の仮定について" id="toc-正規性の仮定について" class="nav-link active" data-scroll-target="#正規性の仮定について"><span class="header-section-number">8.1</span> 正規性の仮定について</a></li>
+  <li><a href="#誤差項と説明変数が独立の仮定について" id="toc-誤差項と説明変数が独立の仮定について" class="nav-link" data-scroll-target="#誤差項と説明変数が独立の仮定について"><span class="header-section-number">8.2</span> 誤差項と説明変数が独立の仮定について</a></li>
+  <li><a href="#分散不均一のシミュレーション" id="toc-分散不均一のシミュレーション" class="nav-link" data-scroll-target="#分散不均一のシミュレーション"><span class="header-section-number">8.3</span> 分散不均一のシミュレーション</a></li>
+  <li><a href="#分散均一の検定" id="toc-分散均一の検定" class="nav-link" data-scroll-target="#分散均一の検定"><span class="header-section-number">8.4</span> 分散均一の検定</a></li>
   </ul>
 </nav>
     </div>
@@ -286,7 +280,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">現代的仮定のもとでの最小二乗法</span></h1>
+<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">現代的仮定のもとでの最小二乗法</span></h1>
 </div>
 
 
@@ -347,8 +341,8 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<section id="正規性の仮定について" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="正規性の仮定について"><span class="header-section-number">9.1</span> 正規性の仮定について</h2>
+<section id="正規性の仮定について" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="正規性の仮定について"><span class="header-section-number">8.1</span> 正規性の仮定について</h2>
 <p>十分な観測値が得られるばあい, <span class="math inline">\(u_i\)</span> が正規分布にしたがっていないくても, 中心極限定理定理より, 最小二乗法推定量は正規分布に近似できる.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>simdata <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">N =</span> <span class="dv">100</span>) {</span>
@@ -435,8 +429,8 @@ window.Quarto = {
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1.928534e-07</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="誤差項と説明変数が独立の仮定について" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="誤差項と説明変数が独立の仮定について"><span class="header-section-number">9.2</span> 誤差項と説明変数が独立の仮定について</h2>
+<section id="誤差項と説明変数が独立の仮定について" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="誤差項と説明変数が独立の仮定について"><span class="header-section-number">8.2</span> 誤差項と説明変数が独立の仮定について</h2>
 <p>また <span class="math inline">\(u_i\)</span> と <span class="math inline">\(x_i\)</span> は独立でなく, <span class="math inline">\(u_i\)</span> と <span class="math inline">\(x_i\)</span> が無相関という弱い条件のもとでも, 一致推定量であることが知られている.</p>
 <p>R でロバスト分散を推定するにはパッケージ <code>AER</code> を導入するのが簡単である. 次のコマンド <code>coeftest</code> を実行すればよい.</p>
 <div class="cell">
@@ -502,8 +496,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="分散不均一のシミュレーション" class="level2" data-number="9.3">
-<h2 data-number="9.3" class="anchored" data-anchor-id="分散不均一のシミュレーション"><span class="header-section-number">9.3</span> 分散不均一のシミュレーション</h2>
+<section id="分散不均一のシミュレーション" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="分散不均一のシミュレーション"><span class="header-section-number">8.3</span> 分散不均一のシミュレーション</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>simdata <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">N =</span> <span class="dv">100</span>) {</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
@@ -575,8 +569,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="分散均一の検定" class="level2" data-number="9.4">
-<h2 data-number="9.4" class="anchored" data-anchor-id="分散均一の検定"><span class="header-section-number">9.4</span> 分散均一の検定</h2>
+<section id="分散均一の検定" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="分散均一の検定"><span class="header-section-number">8.4</span> 分散均一の検定</h2>
 <p>R では以下のように実施すればよい.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bptest</span>(fm1)</span>
@@ -1003,12 +997,12 @@ window.Quarto = {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./07-ols2.html" class="pagination-link" aria-label="重回帰">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">重回帰</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">重回帰</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./09-ivreg.html" class="pagination-link" aria-label="操作変数法">
-        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">操作変数法</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">操作変数法</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

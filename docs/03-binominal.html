@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>4&nbsp; 二項分布 – Rによる統計分析</title>
+<title>3&nbsp; 二項分布 – Rによる統計分析</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -149,7 +149,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-binominal.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">二項分布</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-binominal.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">二項分布</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
@@ -177,85 +177,79 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Rによる統計分析</span></span></a>
+ <span class="menu-text">はじめに</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./01-graph.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">記述統計とグラフ</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">記述統計とグラフ</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02-randomvariable.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">確率変数</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">確率変数</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03-binominal.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">二項分布</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">二項分布</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./04-normal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">正規分布およびその拡張</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">正規分布およびその拡張</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./05-test.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">推測統計</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">推測統計</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./06-ols1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">単回帰</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">単回帰</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./07-ols2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">重回帰</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">重回帰</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./08-ols3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">現代的仮定のもとでの最小二乗法</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">現代的仮定のもとでの最小二乗法</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./09-ivreg.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">操作変数法</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">操作変数法</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./10-ml.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">最尤法</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">最尤法</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./14-timeseries.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">時系列分析</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./15-randomvariable2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">各種確率分布</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">時系列分析</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./16-panel.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">パネルデータ分析</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">パネルデータ分析</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -274,9 +268,9 @@ window.Quarto = {
     <h2 id="toc-title">目次</h2>
    
   <ul class="collapse">
-  <li><a href="#二項分布" id="toc-二項分布" class="nav-link active" data-scroll-target="#二項分布"><span class="header-section-number">4.1</span> 二項分布</a></li>
-  <li><a href="#大数の法則" id="toc-大数の法則" class="nav-link" data-scroll-target="#大数の法則"><span class="header-section-number">4.2</span> 大数の法則</a></li>
-  <li><a href="#中心極限値定理" id="toc-中心極限値定理" class="nav-link" data-scroll-target="#中心極限値定理"><span class="header-section-number">4.3</span> 中心極限値定理</a></li>
+  <li><a href="#二項分布" id="toc-二項分布" class="nav-link active" data-scroll-target="#二項分布"><span class="header-section-number">3.1</span> 二項分布</a></li>
+  <li><a href="#大数の法則" id="toc-大数の法則" class="nav-link" data-scroll-target="#大数の法則"><span class="header-section-number">3.2</span> 大数の法則</a></li>
+  <li><a href="#中心極限値定理" id="toc-中心極限値定理" class="nav-link" data-scroll-target="#中心極限値定理"><span class="header-section-number">3.3</span> 中心極限値定理</a></li>
   </ul>
 </nav>
     </div>
@@ -285,7 +279,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">二項分布</span></h1>
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">二項分布</span></h1>
 </div>
 
 
@@ -307,8 +301,8 @@ window.Quarto = {
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1000</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="二項分布" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="二項分布"><span class="header-section-number">4.1</span> 二項分布</h2>
+<section id="二項分布" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="二項分布"><span class="header-section-number">3.1</span> 二項分布</h2>
 <p>表が出る確率が <span class="math inline">\(p\)</span> となるコインを <span class="math inline">\(n\)</span> 回投げるとする. このとき表がでる回数は試行によって変わりうる. このように確率にしたがう, 試行によって変わりうる変数を確率変数という. この確率変数は二項分布にしたがうといわれる.</p>
 <p>二項分布にしたがう確率変数 <span class="math inline">\(X\)</span> が <span class="math inline">\(k\)</span> である確率 <span class="math inline">\(P[X=k]\)</span> は <span class="math display">\[
 {n \choose k}p^k (1-p)^{n-k}
@@ -395,8 +389,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="大数の法則" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="大数の法則"><span class="header-section-number">4.2</span> 大数の法則</h2>
+<section id="大数の法則" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="大数の法則"><span class="header-section-number">3.2</span> 大数の法則</h2>
 <p>表が出る確率が <span class="math inline">\(p=0.78\)</span> となるコインを <span class="math inline">\(2\)</span> 回投げるとする. このとき表がでる回数は二項分布にしたがい, その試行を1000回繰り返したときのヒストグラムは以下になる.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>coins <span class="ot">&lt;-</span> <span class="fu">do</span>(<span class="dv">1000</span>) <span class="sc">*</span> <span class="fu">rflip</span>(<span class="dv">2</span>, <span class="at">prob =</span> <span class="fl">0.78</span>)</span>
@@ -481,8 +475,8 @@ E[X]=\int_0^1 x dx =\left[\frac{x^2}{2}\right]^1_0=\frac{1}{2}
 </div>
 <p>どれも0.5に近づいているが, 近づき方が同じではない.</p>
 </section>
-<section id="中心極限値定理" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="中心極限値定理"><span class="header-section-number">4.3</span> 中心極限値定理</h2>
+<section id="中心極限値定理" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="中心極限値定理"><span class="header-section-number">3.3</span> 中心極限値定理</h2>
 <p><span class="math inline">\(X\)</span> が範囲 <span class="math inline">\([0,1]\)</span> の一様分布にしたがうとき, 平均は <span class="math inline">\(1/2\)</span>, 分散は <span class="math inline">\(1/12\)</span> である. 実際, 分散は <span class="math inline">\(V[X]=E[X^2]-E[X]^2\)</span> なので <span class="math display">\[
 E[X^2]=\int_0^1 x^2 dx =\left[\frac{x^3}{3}\right]^1_0=\frac{1}{3}
 \]</span> より <span class="math display">\[
@@ -988,12 +982,12 @@ f(x)=1-|x-1|\;(0\leq x \leq 2)
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./02-randomvariable.html" class="pagination-link" aria-label="確率変数">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">確率変数</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">確率変数</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./04-normal.html" class="pagination-link" aria-label="正規分布およびその拡張">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">正規分布およびその拡張</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">正規分布およびその拡張</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

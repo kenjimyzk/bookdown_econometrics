@@ -56,24 +56,29 @@ simdata1 <- function(N = 100) {
 ```
 
 ```{r}
-siml_iv <- do(500) * {
-  simdata1() |> {
-    df_ols <- lm(y ~ x, data = _) |> tidy() |>
-      filter(term == "x") |> select(estimate, std.error) |>
+siml_iv <- do(500) *
+  {
+    df_sim <- simdata1()
+    df_ols <- lm(y ~ x, data = df_sim) |>
+      tidy() |>
+      filter(term == "x") |>
+      select(estimate, std.error) |>
       mutate(tval = (estimate - 1) / std.error)
-    df_iv <- ivreg(y ~ x | z, data = _) |> tidy() |>
-      filter(term == "x") |> select(estimate, std.error) |>
+    df_iv <- ivreg(y ~ x | z, data = df_sim) |>
+      tidy() |>
+      filter(term == "x") |>
+      select(estimate, std.error) |>
       rename(estimate_iv = estimate, std.error_iv = std.error) |>
       mutate(tval_iv = (estimate_iv - 1) / std.error_iv)
     bind_cols(df_ols, df_iv)
-  }()
-}
+  }
 ```
 
 ```{r}
-siml_iv |> dplyr::select(estimate, estimate_iv) |>
+siml_iv |>
+  dplyr::select(estimate, estimate_iv) |>
   tidyr::gather(variable, value) |>
-  favstats(~value | variable, data = _)
+  favstats(~ value | variable, data = _)
 ```
 
 最小二乗法による推定値のヒストグラムは以下である.
@@ -98,9 +103,13 @@ R においては次のコマンドを実行すればよい.
 操作変数は `motheduc`, `fatheduc` である.
 
 ```{r}
-fm <- ivreg(log(wage) ~ educ + exper + I(exper^2) |
-              exper + I(exper^2) + motheduc + fatheduc,
-            data = df)
+fm <- ivreg(
+  log(wage) ~ educ +
+    exper +
+    I(exper^2) |
+    exper + I(exper^2) + motheduc + fatheduc,
+  data = df
+)
 summary(fm)
 ```
 
@@ -126,7 +135,8 @@ linearHypothesis(fm, c("exper", "I(exper^2)"))
 LM検定は以下のように実施すればよい.
 ```{r}
 lmt <- lm(resid(fm0) ~ educ + exper + I(exper^2), data = df) |>
-  rsquared() * nrow(df)
+  rsquared() *
+  nrow(df)
 lmt
 1 - pchisq(lmt, df = 3)
 ```
@@ -155,7 +165,8 @@ waldtest(ols3, ols4)
 
 ```{r}
 jt <- lm(resid(fm) ~ exper + I(exper^2) + motheduc + fatheduc, data = df) |>
-  rsquared() * nrow(df)
+  rsquared() *
+  nrow(df)
 jt
 1 - pchisq(jt, df = 1)
 ```
@@ -178,9 +189,12 @@ waldtest(fm0, fm, vcov = vcovHC)
 ### 分散不均一の検定
 
 ```{r}
-bpt <- lm(I(resid(fm)^2) ~ exper + I(exper^2) +
-            motheduc + fatheduc, data = df) |>
-  rsquared() * nrow(df)
+bpt <- lm(
+  I(resid(fm)^2) ~ exper + I(exper^2) + motheduc + fatheduc,
+  data = df
+) |>
+  rsquared() *
+  nrow(df)
 bpt
 1 - pchisq(bpt, df = 4)
 ```

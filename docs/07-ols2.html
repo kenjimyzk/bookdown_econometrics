@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>8&nbsp; 重回帰 – Rによる統計分析</title>
+<title>7&nbsp; 重回帰 – Rによる統計分析</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -149,7 +149,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./07-ols2.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">重回帰</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./07-ols2.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">重回帰</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
@@ -177,85 +177,79 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Rによる統計分析</span></span></a>
+ <span class="menu-text">はじめに</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./01-graph.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">記述統計とグラフ</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">記述統計とグラフ</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02-randomvariable.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">確率変数</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">確率変数</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03-binominal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">二項分布</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">二項分布</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./04-normal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">正規分布およびその拡張</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">正規分布およびその拡張</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./05-test.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">推測統計</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">推測統計</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./06-ols1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">単回帰</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">単回帰</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./07-ols2.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">重回帰</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">重回帰</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./08-ols3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">現代的仮定のもとでの最小二乗法</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">現代的仮定のもとでの最小二乗法</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./09-ivreg.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">操作変数法</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">操作変数法</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./10-ml.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">最尤法</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">最尤法</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./14-timeseries.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">時系列分析</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./15-randomvariable2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">各種確率分布</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">時系列分析</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./16-panel.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">パネルデータ分析</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">パネルデータ分析</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -274,11 +268,11 @@ window.Quarto = {
     <h2 id="toc-title">目次</h2>
    
   <ul class="collapse">
-  <li><a href="#最小二乗推定量" id="toc-最小二乗推定量" class="nav-link active" data-scroll-target="#最小二乗推定量"><span class="header-section-number">8.1</span> 最小二乗推定量</a></li>
-  <li><a href="#除去変数バイアス" id="toc-除去変数バイアス" class="nav-link" data-scroll-target="#除去変数バイアス"><span class="header-section-number">8.2</span> 除去変数バイアス</a></li>
-  <li><a href="#回帰モデルの拡張" id="toc-回帰モデルの拡張" class="nav-link" data-scroll-target="#回帰モデルの拡張"><span class="header-section-number">8.3</span> 回帰モデルの拡張</a></li>
-  <li><a href="#エフ検定" id="toc-エフ検定" class="nav-link" data-scroll-target="#エフ検定"><span class="header-section-number">8.4</span> エフ検定</a></li>
-  <li><a href="#作表" id="toc-作表" class="nav-link" data-scroll-target="#作表"><span class="header-section-number">8.5</span> 作表</a></li>
+  <li><a href="#最小二乗推定量" id="toc-最小二乗推定量" class="nav-link active" data-scroll-target="#最小二乗推定量"><span class="header-section-number">7.1</span> 最小二乗推定量</a></li>
+  <li><a href="#除去変数バイアス" id="toc-除去変数バイアス" class="nav-link" data-scroll-target="#除去変数バイアス"><span class="header-section-number">7.2</span> 除去変数バイアス</a></li>
+  <li><a href="#回帰モデルの拡張" id="toc-回帰モデルの拡張" class="nav-link" data-scroll-target="#回帰モデルの拡張"><span class="header-section-number">7.3</span> 回帰モデルの拡張</a></li>
+  <li><a href="#エフ検定" id="toc-エフ検定" class="nav-link" data-scroll-target="#エフ検定"><span class="header-section-number">7.4</span> エフ検定</a></li>
+  <li><a href="#作表" id="toc-作表" class="nav-link" data-scroll-target="#作表"><span class="header-section-number">7.5</span> 作表</a></li>
   </ul>
 </nav>
     </div>
@@ -287,7 +281,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">重回帰</span></h1>
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">重回帰</span></h1>
 </div>
 
 
@@ -313,8 +307,8 @@ window.Quarto = {
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ! 'texreg' という名前のパッケージはありません</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2000</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="最小二乗推定量" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="最小二乗推定量"><span class="header-section-number">8.1</span> 最小二乗推定量</h2>
+<section id="最小二乗推定量" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="最小二乗推定量"><span class="header-section-number">7.1</span> 最小二乗推定量</h2>
 <p>説明変数として <span class="math inline">\(x\)</span> と <span class="math inline">\(w\)</span> の2つを考えた線形モデルを考える. <span class="math display">\[
 y = \alpha + \beta x +\gamma w+ u
 \]</span></p>
@@ -452,8 +446,8 @@ y = \alpha + \beta x +\gamma w+ u
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fm)<span class="sc">$</span>adj.r.squared</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.8148396</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="予測" class="level3" data-number="8.1.1">
-<h3 data-number="8.1.1" class="anchored" data-anchor-id="予測"><span class="header-section-number">8.1.1</span> 予測</h3>
+<section id="予測" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="予測"><span class="header-section-number">7.1.1</span> 予測</h3>
 <p><span class="math inline">\(wt=3\)</span>, <span class="math inline">\(hp = 10\)</span> のときの予測値は以下である.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fn <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(fm)</span>
@@ -477,8 +471,8 @@ y = \alpha + \beta x +\gamma w+ u
 </div>
 </section>
 </section>
-<section id="除去変数バイアス" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="除去変数バイアス"><span class="header-section-number">8.2</span> 除去変数バイアス</h2>
+<section id="除去変数バイアス" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="除去変数バイアス"><span class="header-section-number">7.2</span> 除去変数バイアス</h2>
 <p>真のモデルが説明変数 <code>x</code> の単回帰モデルであるが, <code>x</code> と正の相関がある <code>w</code> も観測できるとする.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>simdata1 <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">N =</span> <span class="dv">100</span>) {</span>
@@ -600,10 +594,10 @@ y = \alpha + \beta x +\gamma w+ u
 </div>
 <p>まとめると, 真のモデルより多くの説明変数を加えても不偏性は保たれるが, 真のモデルより少ない説明変数の場合, 不偏性は保たれない. 多めの説明変数を加えたほうが望ましい結果が得られる.</p>
 </section>
-<section id="回帰モデルの拡張" class="level2" data-number="8.3">
-<h2 data-number="8.3" class="anchored" data-anchor-id="回帰モデルの拡張"><span class="header-section-number">8.3</span> 回帰モデルの拡張</h2>
-<section id="自乗項" class="level3" data-number="8.3.1">
-<h3 data-number="8.3.1" class="anchored" data-anchor-id="自乗項"><span class="header-section-number">8.3.1</span> 自乗項</h3>
+<section id="回帰モデルの拡張" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="回帰モデルの拡張"><span class="header-section-number">7.3</span> 回帰モデルの拡張</h2>
+<section id="自乗項" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="自乗項"><span class="header-section-number">7.3.1</span> 自乗項</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>fm <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> wt <span class="sc">+</span> <span class="fu">I</span>(wt<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> mtcars)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fm)</span>
@@ -640,8 +634,8 @@ y = \alpha + \beta x +\gamma w+ u
 </div>
 </div>
 </section>
-<section id="ダミー変数" class="level3" data-number="8.3.2">
-<h3 data-number="8.3.2" class="anchored" data-anchor-id="ダミー変数"><span class="header-section-number">8.3.2</span> ダミー変数</h3>
+<section id="ダミー変数" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="ダミー変数"><span class="header-section-number">7.3.2</span> ダミー変数</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>fm <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> wt <span class="sc">+</span> <span class="fu">factor</span>(cyl), <span class="at">data =</span> mtcars)</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fm)</span>
@@ -681,8 +675,8 @@ y = \alpha + \beta x +\gamma w+ u
 </div>
 </div>
 </section>
-<section id="交差項" class="level3" data-number="8.3.3">
-<h3 data-number="8.3.3" class="anchored" data-anchor-id="交差項"><span class="header-section-number">8.3.3</span> 交差項</h3>
+<section id="交差項" class="level3" data-number="7.3.3">
+<h3 data-number="7.3.3" class="anchored" data-anchor-id="交差項"><span class="header-section-number">7.3.3</span> 交差項</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>fm <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> wt <span class="sc">+</span> <span class="fu">factor</span>(cyl) <span class="sc">+</span> wt<span class="sc">:</span><span class="fu">factor</span>(cyl), <span class="at">data =</span> mtcars)</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fm)</span>
@@ -751,8 +745,8 @@ y = \alpha + \beta x +\gamma w+ u
 </div>
 </section>
 </section>
-<section id="エフ検定" class="level2" data-number="8.4">
-<h2 data-number="8.4" class="anchored" data-anchor-id="エフ検定"><span class="header-section-number">8.4</span> エフ検定</h2>
+<section id="エフ検定" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="エフ検定"><span class="header-section-number">7.4</span> エフ検定</h2>
 <p>仮想的に以下のようにデータを生成する.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">100</span></span>
@@ -802,8 +796,8 @@ y = \alpha + \beta x + \gamma w + \delta xw + u
 <span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 20.75858</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="作表" class="level2" data-number="8.5">
-<h2 data-number="8.5" class="anchored" data-anchor-id="作表"><span class="header-section-number">8.5</span> 作表</h2>
+<section id="作表" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="作表"><span class="header-section-number">7.5</span> 作表</h2>
 <p>基本統計量:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">|&gt;</span> <span class="fu">select</span>(mpg, wt, hp, cyl) <span class="sc">|&gt;</span> <span class="fu">gather</span>(key, value) <span class="sc">|&gt;</span></span>
@@ -1233,12 +1227,12 @@ y = \alpha + \beta x + \gamma w + \delta xw + u
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./06-ols1.html" class="pagination-link" aria-label="単回帰">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">単回帰</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">単回帰</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./08-ols3.html" class="pagination-link" aria-label="現代的仮定のもとでの最小二乗法">
-        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">現代的仮定のもとでの最小二乗法</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">現代的仮定のもとでの最小二乗法</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

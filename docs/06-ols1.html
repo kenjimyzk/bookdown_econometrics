@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>7&nbsp; 単回帰 – Rによる統計分析</title>
+<title>6&nbsp; 単回帰 – Rによる統計分析</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -149,7 +149,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-ols1.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">単回帰</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-ols1.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">単回帰</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
@@ -177,85 +177,79 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Rによる統計分析</span></span></a>
+ <span class="menu-text">はじめに</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./01-graph.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">記述統計とグラフ</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">記述統計とグラフ</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02-randomvariable.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">確率変数</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">確率変数</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03-binominal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">二項分布</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">二項分布</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./04-normal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">正規分布およびその拡張</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">正規分布およびその拡張</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./05-test.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">推測統計</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">推測統計</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./06-ols1.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">単回帰</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">単回帰</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./07-ols2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">重回帰</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">重回帰</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./08-ols3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">現代的仮定のもとでの最小二乗法</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">現代的仮定のもとでの最小二乗法</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./09-ivreg.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">操作変数法</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">操作変数法</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./10-ml.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">最尤法</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">最尤法</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./14-timeseries.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">時系列分析</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./15-randomvariable2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">各種確率分布</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">時系列分析</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./16-panel.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">パネルデータ分析</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">パネルデータ分析</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -274,11 +268,11 @@ window.Quarto = {
     <h2 id="toc-title">目次</h2>
    
   <ul class="collapse">
-  <li><a href="#最小二乗推定量" id="toc-最小二乗推定量" class="nav-link active" data-scroll-target="#最小二乗推定量"><span class="header-section-number">7.1</span> 最小二乗推定量</a></li>
-  <li><a href="#古典的仮定" id="toc-古典的仮定" class="nav-link" data-scroll-target="#古典的仮定"><span class="header-section-number">7.2</span> 古典的仮定</a></li>
-  <li><a href="#ティー検定" id="toc-ティー検定" class="nav-link" data-scroll-target="#ティー検定"><span class="header-section-number">7.3</span> ティー検定</a></li>
-  <li><a href="#定数項なしモデル" id="toc-定数項なしモデル" class="nav-link" data-scroll-target="#定数項なしモデル"><span class="header-section-number">7.4</span> 定数項なしモデル</a></li>
-  <li><a href="#係数の解釈" id="toc-係数の解釈" class="nav-link" data-scroll-target="#係数の解釈"><span class="header-section-number">7.5</span> 係数の解釈</a></li>
+  <li><a href="#最小二乗推定量" id="toc-最小二乗推定量" class="nav-link active" data-scroll-target="#最小二乗推定量"><span class="header-section-number">6.1</span> 最小二乗推定量</a></li>
+  <li><a href="#古典的仮定" id="toc-古典的仮定" class="nav-link" data-scroll-target="#古典的仮定"><span class="header-section-number">6.2</span> 古典的仮定</a></li>
+  <li><a href="#ティー検定" id="toc-ティー検定" class="nav-link" data-scroll-target="#ティー検定"><span class="header-section-number">6.3</span> ティー検定</a></li>
+  <li><a href="#定数項なしモデル" id="toc-定数項なしモデル" class="nav-link" data-scroll-target="#定数項なしモデル"><span class="header-section-number">6.4</span> 定数項なしモデル</a></li>
+  <li><a href="#係数の解釈" id="toc-係数の解釈" class="nav-link" data-scroll-target="#係数の解釈"><span class="header-section-number">6.5</span> 係数の解釈</a></li>
   </ul>
 </nav>
     </div>
@@ -287,7 +281,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">単回帰</span></h1>
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">単回帰</span></h1>
 </div>
 
 
@@ -311,8 +305,8 @@ window.Quarto = {
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2000</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="最小二乗推定量" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="最小二乗推定量"><span class="header-section-number">7.1</span> 最小二乗推定量</h2>
+<section id="最小二乗推定量" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="最小二乗推定量"><span class="header-section-number">6.1</span> 最小二乗推定量</h2>
 <p>次の単回帰モデルを考える.</p>
 <p><span class="math display">\[
 y = \alpha + \beta x + u
@@ -420,8 +414,8 @@ y = \alpha + \beta x + u
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fm)<span class="sc">$</span>adj.r.squared</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.6438102</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="予測" class="level3" data-number="7.1.1">
-<h3 data-number="7.1.1" class="anchored" data-anchor-id="予測"><span class="header-section-number">7.1.1</span> 予測</h3>
+<section id="予測" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="予測"><span class="header-section-number">6.1.1</span> 予測</h3>
 <p>それぞれの観測値に応じた予測値は <code>pred</code> で実行できる. それ以外の説明変数のときの予測値は <code>makeFun</code> で関数を作成して実施すればよい. たとえば <code>speed</code> が <span class="math inline">\(30\)</span> のときの予測値は以下である.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fn <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(fm)</span>
@@ -454,8 +448,8 @@ y = \alpha + \beta x + u
 </div>
 </section>
 </section>
-<section id="古典的仮定" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="古典的仮定"><span class="header-section-number">7.2</span> 古典的仮定</h2>
+<section id="古典的仮定" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="古典的仮定"><span class="header-section-number">6.2</span> 古典的仮定</h2>
 <p>単回帰モデル <span class="math display">\[
 y_i = \alpha + \beta x_i + u_i
 \]</span> について次の <strong>古典的仮定</strong> を置いている.</p>
@@ -515,8 +509,8 @@ y_i = \alpha + \beta x_i + u_i
 </div>
 </div>
 </section>
-<section id="ティー検定" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="ティー検定"><span class="header-section-number">7.3</span> ティー検定</h2>
+<section id="ティー検定" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="ティー検定"><span class="header-section-number">6.3</span> ティー検定</h2>
 <p>古典的仮定仮定のもと, 説明変数を所与として係数の標準誤差は以下になる. <span class="math display">\[
 SE[\hat\beta]=\frac{\sigma}{\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2}}
 \]</span></p>
@@ -563,8 +557,8 @@ SE[\hat\beta]=\frac{\sigma}{\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2}}
 </div>
 </div>
 </section>
-<section id="定数項なしモデル" class="level2" data-number="7.4">
-<h2 data-number="7.4" class="anchored" data-anchor-id="定数項なしモデル"><span class="header-section-number">7.4</span> 定数項なしモデル</h2>
+<section id="定数項なしモデル" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="定数項なしモデル"><span class="header-section-number">6.4</span> 定数項なしモデル</h2>
 <p>定数項なしモデルは以下で実施する.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>fm0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(dist <span class="sc">~</span> speed <span class="sc">+</span> <span class="dv">0</span>, <span class="at">data =</span> cars)</span>
@@ -609,8 +603,8 @@ SE[\hat\beta]=\frac{\sigma}{\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2}}
 <span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  TRUE</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="係数の解釈" class="level2" data-number="7.5">
-<h2 data-number="7.5" class="anchored" data-anchor-id="係数の解釈"><span class="header-section-number">7.5</span> 係数の解釈</h2>
+<section id="係数の解釈" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="係数の解釈"><span class="header-section-number">6.5</span> 係数の解釈</h2>
 <p>変数を対数変換して分析がおこなわれることがある. それによって解釈が変わることがある.</p>
 <table class="caption-top table">
 <colgroup>
@@ -649,8 +643,8 @@ SE[\hat\beta]=\frac{\sigma}{\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2}}
 </tbody>
 </table>
 <p>最初のケースはすでに図示してある. 残り3つのケースに分けて計算方法と図示の方法を解説する.</p>
-<section id="説明変数が対数" class="level3" data-number="7.5.1">
-<h3 data-number="7.5.1" class="anchored" data-anchor-id="説明変数が対数"><span class="header-section-number">7.5.1</span> 説明変数が対数</h3>
+<section id="説明変数が対数" class="level3" data-number="6.5.1">
+<h3 data-number="6.5.1" class="anchored" data-anchor-id="説明変数が対数"><span class="header-section-number">6.5.1</span> 説明変数が対数</h3>
 <p>説明変数が対数のときの以下のように実施する.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>fm <span class="ot">&lt;-</span> <span class="fu">lm</span>(dist <span class="sc">~</span> <span class="fu">log</span>(speed), <span class="at">data =</span> cars)</span>
@@ -712,8 +706,8 @@ SE[\hat\beta]=\frac{\sigma}{\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2}}
 </div>
 <p>ただし <code>plotModel</code> は使えない.</p>
 </section>
-<section id="被説明変数が対数" class="level3" data-number="7.5.2">
-<h3 data-number="7.5.2" class="anchored" data-anchor-id="被説明変数が対数"><span class="header-section-number">7.5.2</span> 被説明変数が対数</h3>
+<section id="被説明変数が対数" class="level3" data-number="6.5.2">
+<h3 data-number="6.5.2" class="anchored" data-anchor-id="被説明変数が対数"><span class="header-section-number">6.5.2</span> 被説明変数が対数</h3>
 <p>被説明変数が対数のときの以下のように実施する.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>fm <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(dist) <span class="sc">~</span> speed, <span class="at">data =</span> cars)</span>
@@ -765,8 +759,8 @@ SE[\hat\beta]=\frac{\sigma}{\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2}}
 </div>
 <p>ただし <code>plotModel</code> は使えない.</p>
 </section>
-<section id="両変数が対数" class="level3" data-number="7.5.3">
-<h3 data-number="7.5.3" class="anchored" data-anchor-id="両変数が対数"><span class="header-section-number">7.5.3</span> 両変数が対数</h3>
+<section id="両変数が対数" class="level3" data-number="6.5.3">
+<h3 data-number="6.5.3" class="anchored" data-anchor-id="両変数が対数"><span class="header-section-number">6.5.3</span> 両変数が対数</h3>
 <p>両変数が対数のときの以下のように実施する.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>fm <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(dist) <span class="sc">~</span> <span class="fu">log</span>(speed), <span class="at">data =</span> cars)</span>
@@ -1250,12 +1244,12 @@ SE[\hat\beta]=\frac{\sigma}{\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2}}
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./05-test.html" class="pagination-link" aria-label="推測統計">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">推測統計</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">推測統計</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./07-ols2.html" class="pagination-link" aria-label="重回帰">
-        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">重回帰</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">重回帰</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
