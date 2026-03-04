@@ -54,15 +54,13 @@ format:
 
 execute:
   echo: true
-  warning: false
-  message: false
+  warning: true
+  message: true
   cache: false
-  error: true
+  error: false
 
 knitr:
   opts_chunk:
     comment: "#>"
     collapse: true
-    autodep: true
-    # change device to png to avoid ragg dependency
     dev: "png"

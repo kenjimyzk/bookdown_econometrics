@@ -4,8 +4,7 @@
 #| message: false
 #| warning: false
 library(AER)
-library(tidyr)
-library(stringr)
+library(tidyverse)
 library(dynlm)
 library(sandwich)
 library(zoo)
