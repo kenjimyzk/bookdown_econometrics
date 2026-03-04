@@ -1,0 +1,16 @@
+---
+title: "Rによる統計分析"
+date: today
+lang: ja-JP
+description: "This is a description. Please wrote a abstract this contents."
+---
+
+# はじめに {.unnumbered}
+
+## session info
+
+私の作業環境 (動作確認環境) です.
+
+```{r}
+sessionInfo()
+```

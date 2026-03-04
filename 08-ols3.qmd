@@ -1,0 +1,191 @@
+# 現代的仮定のもとでの最小二乗法
+
+```{r}
+#| message: false
+#| warning: false
+set.seed(2000)
+library(AER)
+library(mosaic)
+library(broom)
+```
+
+前節において以下の仮定を置いていた.
+
++ $(x_i,y_i)$ は独立同一分布にしたがう.
++ $E[u_i]=0$ である.
++ $u_i$ と $x_i$ は独立である.
++ $u_i$ は正規分布にしたがう.
+
+これらの仮定を緩めることで分析にどのような影響をあたえるのかを見ていく.
+
+仮想的に以下のモデルを考える.
+```{r}
+data("Journals", package = "AER")
+df <- Journals |>
+  mutate(citeprice = price / citations,
+         age = 2000 - foundingyear) |>
+  select(subs, citeprice, age)
+inspect(df)
+```
+
+作図すると以下である.
+```{r}
+gf_point(log(subs) ~ log(citeprice), data = df)
+```
+
+## 正規性の仮定について
+十分な観測値が得られるばあい, $u_i$ が正規分布にしたがっていないくても, 中心極限定理定理より, 最小二乗法推定量は正規分布に近似できる.
+
+```{r}
+simdata <- function(N = 100) {
+  x <- rnorm(N, mean = 10, sd = 1)
+  u <- runif(N, -10, 10)
+  y <- 1 + x + u
+  data.frame(x, y)
+}
+
+siml <- do(1000) * {
+  lm(y ~ x, data = simdata(100)) |> tidy() |>
+    filter(term == "x") |> select(estimate, std.error) |>
+    mutate(tval = (estimate - 1) / std.error)
+}
+```
+
+```{r}
+gf_dhistogram(~tval, data = siml) |>
+  gf_dist("norm")
+```
+
+ここの係数ゼロのティー検定について, ライブラリ `AER` を導入して `coeftest` を用いればよい.
+```{r}
+fm1 <- lm(log(subs) ~ log(citeprice) * log(age), data = df)
+coeftest(fm1, df = Inf)
+```
+ただ十分なデータのもとではティー値のままでもよい.
+
+同様に複数制約の場合, エフ検定統計量に制約の数を乗じた統計量が
+自由度が制約数のカイ二乗分布にしたがうことが知られている.
+これをR で実施するには `waldtest` を用いればよい. 
+```{r}
+fm0 <- lm(log(subs) ~ log(citeprice), data = df)
+waldtest(fm0, fm1, test = "Chisq")
+```
+
+オプション `test` を付けなければエフ検定を実施する.
+```{r}
+waldtest(fm0, fm1)
+```
+これは `anova` と同じである.
+```{r}
+anova(fm0, fm1)
+```
+
+複数制約の検定としてLM検定というのもある.
+```{r}
+lmt <- lm(I(resid(fm0)) ~ log(age) * log(citeprice), data = df) |>
+  rsquared() * nrow(df)
+lmt
+1 - pchisq(lmt, df = 1)
+```
+
+## 誤差項と説明変数が独立の仮定について
+また $u_i$ と $x_i$ は独立でなく, $u_i$ と $x_i$ が無相関という弱い条件のもとでも,
+一致推定量であることが知られている.
+
+R でロバスト分散を推定するにはパッケージ `AER` を導入するのが簡単である.
+次のコマンド `coeftest` を実行すればよい.
+```{r}
+coeftest(fm1, vcov = vcovHC)
+```
+
+STATA と同じにするには
+```{r}
+coeftest(fm1, vcov = vcovHC(fm1, type = "HC1"))
+```
+としなければならない.
+
+またティー分布でなく正規分布とすることもできる.
+```{r}
+coeftest(fm0, vcov = vcovHC, df = Inf)
+```
+
+複数の係数についての検定は `waldtest` を実行すればよい.
+```{r}
+waldtest(fm0, fm1, vcov = vcovHC)
+```
+
+先の結果はエフ検定であるが, カイ二乗検定を実施するには以下を実施すればよい.
+```{r}
+waldtest(fm0, fm1, vcov = vcovHC, test = "Chisq")
+```
+
+## 分散不均一のシミュレーション
+```{r}
+simdata <- function(N = 100) {
+  x <- rnorm(N, mean = 10, sd = 1)
+  u <- exp(x) * rnorm(N)
+  y <- 1 + x + u
+  data.frame(x, y)
+}
+
+siml <- do(1000) * {
+  lm(y ~ x, data = simdata(100)) |> tidy() |>
+    filter(term == "x") |> select(estimate, std.error) |>
+    mutate(tval = (estimate - 1) / std.error)
+}
+```
+
+通常の回帰分析を実施すると, 係数が不偏であっても, 正しく分散が推計できていないことが明らかである.
+```{r}
+gf_dhistogram(~tval, data = siml) |>
+  gf_lims(x = c(-4, 4), y = c(0, 0.5)) |>
+  gf_dist("norm")
+```
+
+加重最小自乗法を実施したシミュレーションを実施する.
+```{r}
+siml <- do(1000) * {
+  lm(y ~ x, data = simdata(100), weight = 1 / exp(x)) |> tidy() |>
+    filter(term == "x") |> select(estimate, std.error) |>
+    mutate(tval = (estimate - 1) / std.error)
+}
+```
+
+加重最小自乗法を実施すると, 正規分布に近似できる.
+```{r}
+gf_dhistogram(~tval, data = siml) |>
+  gf_lims(x = c(-4, 4), y = c(0, 0.5)) |>
+  gf_dist("norm")
+```
+
+ロバスト分散を利用したシミュレーションを実施する.
+```{r}
+siml <- do(1000) * {
+  lm(y ~ x, data = simdata(100)) |>
+    coeftest(vcov = hccm) |> tidy() |>
+    filter(term == "x") |> select(estimate, std.error) |>
+    mutate(tval = (estimate - 1) / std.error)
+}
+```
+
+ロバスト分散を利用した場合, 正規分布に近似できる.
+```{r}
+gf_dhistogram(~tval, data = siml) |>
+  gf_lims(x = c(-4, 4), y = c(0, 0.5)) |>
+  gf_dist("norm")
+```
+
+## 分散均一の検定
+
+R では以下のように実施すればよい.
+```{r}
+bptest(fm1)
+```
+
+ホワイト検定は以下で実施する.
+```{r}
+wht <- lm(I(resid(fm1)^2) ~ fitted(fm1) + I(fitted(fm1)^2), data = df) |>
+  rsquared() * nrow(df)
+wht
+1 - pchisq(wht, df = 2)
+```

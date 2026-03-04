@@ -92,14 +92,14 @@ head(simulation)
 
 これを図示すると以下になる.
 ```{r}
-gf_pointrangeh(.index~m+mu+ml,data=simulation,color="blue") %>%
-  gf_vline(xintercept=10,col="red",linetype = 2)
+gf_pointrange(m + ml + mu ~ .index, data = simulation, color = "blue") |>
+  gf_vline(xintercept = 10, col = "red", linetype = 2) |>
+  gf_refine(coord_flip())
 ```
 
 
 この例では20回中1回だけ正しく区間推定されていないことをしめしている.
-もちろん乱数によっては0回や2回の場合もありうる.
-ただ10万回実施するなら, ほぼ1万回誤って推定されることになる.
+もちろん乱数によっては0回や2回の場合もあり
 
 ## カテゴリカル・データの検定
 以下のデータを考える.
@@ -297,4 +297,4 @@ R での計算実行例は以下である.
 # cor.test(~pcs+cesd,data=df)
 cor.test(pcs~cesd,data=df)
 ```
-`cor.test(df$pcs,df$cesd)` でも同様の結果になる. 
+`cor.test(df$pcs,df$cesd)` でも同様の結果になる.

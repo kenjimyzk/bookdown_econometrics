@@ -1,0 +1,22 @@
+unnamed-chunk-1	.Random.seed
+unnamed-chunk-2	P	X
+unnamed-chunk-3	
+unnamed-chunk-4	mu
+unnamed-chunk-5	muy	Y
+unnamed-chunk-6	varx
+unnamed-chunk-7	
+unnamed-chunk-8	
+unnamed-chunk-9	P	Px	Py	X	Y
+unnamed-chunk-10	names
+unnamed-chunk-11	df
+unnamed-chunk-12	
+unnamed-chunk-13	mux	muy
+unnamed-chunk-14	varx	vary
+unnamed-chunk-15	cov
+unnamed-chunk-16	
+unnamed-chunk-17	P	X	Y
+unnamed-chunk-18	Px	Py
+unnamed-chunk-19	covxy	mux	muy
+unnamed-chunk-20	
+unnamed-chunk-21	
+unnamed-chunk-22	

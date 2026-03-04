@@ -1,0 +1,116 @@
+# パネルデータ分析
+
+```{r}
+#| message: false
+library(mosaic)
+library(plm)
+```
+
+## Pooled OLS
+
+```{r}
+simdata0 <- function(N = 100) {
+  x <- rnorm(N, 10, 10)
+  y <- 1 + x + rnorm(N, 1, 10)
+  data.frame(id = 1:N, x, y)
+}
+
+df0 <- data.frame(simdata0(), time = 0)
+df1 <- data.frame(simdata0(), time = 1)
+df2 <- data.frame(simdata0(), time = 2)
+df <- bind_rows(df0, df1, df2)
+head(df)
+```
+
+```{r}
+df <- pdata.frame(df, index = c("id", "time"))
+fm.pooling <- plm(y ~ x, data = df, model = "pooling")
+summary(fm.pooling)
+```
+
+## ランダム効果モデル
+
+### 個体効果がランダム効果と独立な場合
+
+```{r}
+simdata1 <- function(N = 100, alpha = 0) {
+  x <- rnorm(N, 10, 10)
+  y <- alpha + x + rnorm(N, 1, 10)
+  data.frame(id = 1:N, x, y)
+}
+
+N <- 100
+alpha <- rnorm(N, 10, 3)
+df0 <- data.frame(simdata1(N, alpha), time = 0)
+df1 <- data.frame(simdata1(N, alpha), time = 1)
+df2 <- data.frame(simdata1(N, alpha), time = 2)
+df <- bind_rows(df0, df1, df2)
+head(df)
+```
+
+```{r}
+df <- pdata.frame(df, index = c("id", "time"))
+fm.pooling <- plm(y ~ x, data = df, model = "pooling")
+summary(fm.pooling)
+```
+
+```{r}
+fm.re <- plm(y ~ x, data = df, model = "random")
+summary(fm.re)
+```
+
+### ラグランジュ乗数検定（個体・時間・双方向効果）
+
+```{r}
+plmtest(fm.pooling, effect = "individual")
+plmtest(fm.pooling, effect = "time")
+plmtest(fm.pooling, effect = "twoways")
+```
+
+### 個体効果が説明変数と相関する場合
+
+```{r}
+simdata2 <- function(N = 100, alpha = 0, mux = 10) {
+  x <- rnorm(N, mux, 10)
+  y <- alpha + x + rnorm(N, 0, 10)
+  data.frame(id = 1:N, x, y)
+}
+
+N <- 300
+alpha <- rnorm(N, 10, 10)
+df0 <- data.frame(simdata2(N, alpha, alpha), time = 0)
+df1 <- data.frame(simdata2(N, alpha, alpha), time = 1)
+df2 <- data.frame(simdata2(N, alpha, alpha), time = 2)
+df <- bind_rows(df0, df1, df2)
+head(df)
+```
+
+```{r}
+df <- pdata.frame(df, index = c("id", "time"))
+fm.pooling <- plm(y ~ x, data = df, model = "pooling")
+summary(fm.pooling)
+```
+
+```{r}
+fm.re <- plm(y ~ x, data = df, model = "random")
+summary(fm.re)
+```
+
+## 固定効果モデル
+
+```{r}
+fm.fe <- plm(y ~ x, data = df, model = "within")
+summary(fm.fe)
+```
+
+### F検定（固定効果 vs Pooled OLS）
+
+```{r}
+pFtest(fm.fe, fm.pooling)
+```
+
+### ハウスマン検定（固定効果 vs ランダム効果）
+
+```{r}
+phtest(fm.fe, fm.re)
+```

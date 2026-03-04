@@ -1,0 +1,68 @@
+project:
+  type: book
+  output-dir: docs
+
+lang: ja
+
+book:
+  title: "Rによる統計分析"
+  output-file: book_filename
+  author: "宮﨑憲治 (Kenji Miyazaki)"
+  date: today
+  chapters:
+    - index.qmd
+    - 01-graph.qmd
+    - 02-randomvariable.qmd
+    - 03-binominal.qmd
+    - 04-normal.qmd
+    - 05-test.qmd
+    - 06-ols1.qmd
+    - 07-ols2.qmd
+    - 08-ols3.qmd
+    - 09-ivreg.qmd
+    - 10-ml.qmd
+    - 14-timeseries.qmd
+    - 15-randomvariable2.qmd
+    - 16-panel.qmd
+    - 99-references.qmd
+
+format:
+  html:
+    theme: cosmo
+#     css: style.css
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    code-fold: false
+    df-print: paged
+    knitr:
+      opts_chunk:
+        dev: "png"
+
+  # pdf:
+  #   pdf-engine: lualatex
+  #   documentclass: ltjsbook
+  #   classoption: [lualatex, ja=standard]
+  #   fig-align: "center"
+  #   include-in-header:
+  #     - preamble.tex
+  #   # include-after-body:
+  #   #   - afterbody.tex
+  #   knitr:
+  #     opts_chunk:
+  #       dev: "png"
+
+execute:
+  echo: true
+  warning: false
+  message: false
+  cache: false
+  error: true
+
+knitr:
+  opts_chunk:
+    comment: "#>"
+    collapse: true
+    autodep: true
+    # change device to png to avoid ragg dependency
+    dev: "png"

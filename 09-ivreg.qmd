@@ -1,0 +1,186 @@
+# 操作変数法
+
+```{r}
+#| message: false
+#| warning: false
+library(mosaic)
+library(stargazer)
+library(AER)
+library(broom)
+library(wooldridge)
+set.seed(2000)
+```
+
+## 操作変数
+```{r}
+#| message: false
+#| warning: false
+data("mroz", package = "wooldridge")
+df <- subset(mroz, inlf == 1)
+```
+
+これまで回帰モデルで一致推定量を得るためには次の仮定が必要であった.
+
+1. 母集団が線形モデル
+2. 標本が無作為抽出
+3. 誤差項が平均ゼロで説明変数と無相関
+4. 説明変数に多重共線性が存在しない
+
+3つ目の説明変数が必ずしも成立しない場合の推定方法を紹介する.
+
+R においては次のコマンドを実行すればよい.
+ここで被説明変数は `log(wage)`,
+内生変数は `educ`,
+操作変数は `fatheduc` である.
+
+```{r}
+fm <- ivreg(log(wage) ~ educ | fatheduc, data = df)
+coef(fm)
+```
+
+傾きの推定値は以下でも実行可能である.
+```{r}
+with(df, cov(log(wage), fatheduc) / cov(educ, fatheduc))
+```
+
+## シミュレーション
+つぎのシミュレーションを考える.
+```{r}
+simdata1 <- function(N = 100) {
+  z <- rnorm(N, mean = 10, sd = 2)
+  u <- rnorm(N)
+  x <- z + u
+  y <- 1 + x + u
+  data.frame(x, y, z)
+}
+```
+
+```{r}
+siml_iv <- do(500) * {
+  simdata1() |> {
+    df_ols <- lm(y ~ x, data = _) |> tidy() |>
+      filter(term == "x") |> select(estimate, std.error) |>
+      mutate(tval = (estimate - 1) / std.error)
+    df_iv <- ivreg(y ~ x | z, data = _) |> tidy() |>
+      filter(term == "x") |> select(estimate, std.error) |>
+      rename(estimate_iv = estimate, std.error_iv = std.error) |>
+      mutate(tval_iv = (estimate_iv - 1) / std.error_iv)
+    bind_cols(df_ols, df_iv)
+  }()
+}
+```
+
+```{r}
+siml_iv |> dplyr::select(estimate, estimate_iv) |>
+  tidyr::gather(variable, value) |>
+  favstats(~value | variable, data = _)
+```
+
+最小二乗法による推定値のヒストグラムは以下である.
+```{r}
+gf_histogram(~estimate, data = siml_iv) |>
+  gf_lims(x = c(0.5, 1.5)) |>
+  gf_vline(xintercept = 1)
+```
+
+操作変数法による推定値のヒストグラムは以下である.
+```{r}
+gf_histogram(~estimate_iv, data = siml_iv) |>
+  gf_lims(x = c(0.5, 1.5)) |>
+  gf_vline(xintercept = 1)
+```
+
+## 2段階最小二乗法
+
+R においては次のコマンドを実行すればよい.
+ここで被説明変数は `log(wage)`,
+内生変数は `educ`, 外生変数は `exper`, `I(exper^2)`,
+操作変数は `motheduc`, `fatheduc` である.
+
+```{r}
+fm <- ivreg(log(wage) ~ educ + exper + I(exper^2) |
+              exper + I(exper^2) + motheduc + fatheduc,
+            data = df)
+summary(fm)
+```
+
+実際の二段階最小二乗法でも確認できる.
+```{r}
+ols1 <- lm(educ ~ exper + I(exper^2) + motheduc + fatheduc, data = df)
+ols2 <- lm(log(wage) ~ fitted(ols1) + exper + I(exper^2), data = df)
+summary(ols2)
+```
+
+### 複数制約の検定
+
+```{r}
+fm0 <- ivreg(log(wage) ~ educ | motheduc + fatheduc, data = df)
+waldtest(fm0, fm)
+```
+
+もしくは
+```{r}
+linearHypothesis(fm, c("exper", "I(exper^2)"))
+```
+
+LM検定は以下のように実施すればよい.
+```{r}
+lmt <- lm(resid(fm0) ~ educ + exper + I(exper^2), data = df) |>
+  rsquared() * nrow(df)
+lmt
+1 - pchisq(lmt, df = 3)
+```
+
+## 特定化検定
+```{r}
+summary(fm, diagnostics = TRUE)
+```
+
+### Weak instruments
+
+```{r}
+ols0 <- lm(educ ~ exper + I(exper^2), data = df)
+waldtest(ols0, ols1)
+```
+
+### Du-Hausman 検定
+
+```{r}
+ols3 <- lm(log(wage) ~ educ + exper + I(exper^2), data = df)
+ols4 <- update(ols3, . ~ . + resid(ols1))
+waldtest(ols3, ols4)
+```
+
+### Sargan 検定
+
+```{r}
+jt <- lm(resid(fm) ~ exper + I(exper^2) + motheduc + fatheduc, data = df) |>
+  rsquared() * nrow(df)
+jt
+1 - pchisq(jt, df = 1)
+```
+
+## ロバスト分散
+
+```{r}
+summary(fm, vcov = vcovHC, df = Inf)
+```
+
+```{r}
+coeftest(fm, vcov = vcovHC)
+```
+
+ロバスト分散のもとでの複数制約の検定は以下を実施する.
+```{r}
+waldtest(fm0, fm, vcov = vcovHC)
+```
+
+### 分散不均一の検定
+
+```{r}
+bpt <- lm(I(resid(fm)^2) ~ exper + I(exper^2) +
+            motheduc + fatheduc, data = df) |>
+  rsquared() * nrow(df)
+bpt
+1 - pchisq(bpt, df = 4)
+```
