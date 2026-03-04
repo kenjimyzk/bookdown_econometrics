@@ -38,11 +38,7 @@ sort(tally(~sector, data = CPS85), decreasing = TRUE)
 ``
 `
 5 番目の「その他 (other)」を最後にするには以下のようにする.
-`
-``
-{
-  r
-}
+```{r}
 (tab <- sort(tally(~sector, data = CPS85), decreasing = TRUE)[c(1:4, 6:8, 5)])
 ```
 
@@ -181,7 +177,8 @@ $$
 は以下で計算できる.
 ```{r}
 var(~wage, data = CPS85)
-```
+`
+``
 その平方根である標準偏差 $s_x$ は以下で計算できる.
 ```{r}
 sd(~wage, data = CPS85)

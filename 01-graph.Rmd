@@ -9,7 +9,7 @@ output:
 ```{r include=FALSE}
 rm(list = ls())
 library(knitr)
-opts_chunk$set(echo = TRUE,error = FALSE,warning = FALSE,collapse = TRUE,cache = TRUE,cache.extra = rand_seed, autodep = TRUE)
+opts_chunk$set(echo = TRUE, error = FALSE, warning = FALSE, collapse = TRUE, cache = TRUE, cache.extra = rand_seed, autodep = TRUE)
 ``` 
 
 ```{r}
@@ -40,65 +40,68 @@ inspect(CPS85)
 詳しくは `help(CPS85)` を実行してヘルプをみていただきたい.
 それぞれの業種ごとの観測数を計測するには `tally` を実行する.
 ```{r}
-tally(~sector,data=CPS85)
+tally(~sector, data = CPS85)
 ```
 
 順序を変えるには以下のようにする.
 ```{r}
-sort(tally(~sector,data=CPS85),decreasing = TRUE)
+sort(tally(~sector, data = CPS85), decreasing = TRUE)
 ```
 5 番目の「その他 (other)」を最後にするには以下のようにする.
 ```{r}
-(tab<-sort(tally(~sector,data=CPS85),decreasing = TRUE)[c(1:4,6:8,5)])
+(tab <- sort(tally(~sector, data = CPS85), decreasing = TRUE)[c(1:4, 6:8, 5)])
 ```
 
 もしくはもとのデータで順序をつけるとよい.
 ```{r}
-df<-CPS85 %>% 
-  mutate(sector= factor(sector,
-                        levels =c("prof","clerical","service","manuf",
-                                  "manag","sales","const","other")))
+df <- CPS85 %>%
+  mutate(sector = factor(sector,
+    levels = c(
+      "prof", "clerical", "service", "manuf",
+      "manag", "sales", "const", "other"
+    )
+  ))
 
-tally(~sector,data=df)
+tally(~sector, data = df)
 ```
 
 合計を示すにはオプション `margins=TRUE` を付け加える.
 ```{r}
-tally(~sector,data=CPS85,margins=TRUE)
+tally(~sector, data = CPS85, margins = TRUE)
 ```
 
 
 割合を示すにはオプション `format='percent'` を付け加える.
 ```{r}
-tally(~sector, data=CPS85, format='percent',margins=TRUE)
+tally(~sector, data = CPS85, format = "percent", margins = TRUE)
 ```
 
 
 作図にはドット図もしくは棒グラフが適切であろう. 
 棒グラフは `bargraph` で実行できる.
 ```{r}
-gf_bar(~sector,data=CPS85)
+gf_bar(~sector, data = CPS85)
 ```
 
 オプション `fill=~sector` をつけることでカラフルにできる.
 ```{r}
-gf_bar(~sector,fill=~sector,data=CPS85)
+gf_bar(~sector, fill = ~sector, data = CPS85)
 ```
 
 もしこの図を大きい順に並べ替えたり, 名前を変更するなら, データを変更するのがよい.
 さきに, その他を最後にあとは大きい順に並べ直したデータセット `df` を作成したので, それを用いると以下になる.
 ```{r}
-gf_bar(~sector,fill=~sector,data=df)
+gf_bar(~sector, fill = ~sector, data = df)
 ```
 
 縦と横を変更するには次のようにする.
 ```{r}
-gf_barh(~sector,fill=~sector,data=df)
+gf_bar(~sector, fill = ~sector, data = df)
 ```
 最後の`other`が一番上に位置していることに注意. 順序を逆にするには以下とする．
 
 ```{r}
-gf_barh(~sector,fill=~sector,data=df) %>%
+gf_bar(~sector, fill = ~sector, data = df) %>%
   gf_refine(scale_y_discrete(limits = rev(levels(df$sector))))
 ```
 
@@ -107,7 +110,7 @@ gf_barh(~sector,fill=~sector,data=df) %>%
 
 円グラフはあまり, 学術研究ではもちいないが, 基本グラフィクス `pie` を使えば良い.
 ```{r}
-tally(~sector,data=df, format='percent') %>%
+tally(~sector, data = df, format = "percent") %>%
   pie(clockwise = TRUE)
 ```
 
@@ -117,34 +120,34 @@ tally(~sector,data=df, format='percent') %>%
 2 つのカテゴリごとの観測数は以下のように実行する.
 
 ```{r}
-tally(sex~sector,data=CPS85)
+tally(sex ~ sector, data = CPS85)
 ```
 
 セクターごとの男女の比率は以下のようになる.
 ```{r}
-tally(sex ~ sector,data=CPS85,format = "proportion", margin=TRUE)
+tally(sex ~ sector, data = CPS85, format = "proportion", margin = TRUE)
 ```
 
 縦と横を変えることも出来る.
 ```{r}
-tally(sector~sex,data=CPS85)
+tally(sector ~ sex, data = CPS85)
 ```
 
 以下のコマンドと同じ結果になる.
 ```{r}
-tally(~sector|sex,data=CPS85)
+tally(~ sector | sex, data = CPS85)
 ```
 
 カテゴリーごとのグラフを実施するには以下を実行する.
 ```{r}
-gf_bar(~sector,fill=~sex,data=CPS85)
+gf_bar(~sector, fill = ~sex, data = CPS85)
 ```
 
 同じパネルに男女ごとに重ねたヒストグラムになる.
 
 オプション `position = "dodge"` を追加することで, 並べることもできる出来る.
 ```{r}
-gf_bar(~sector,fill=~sex,position = "dodge",data=CPS85)
+gf_bar(~sector, fill = ~sex, position = "dodge", data = CPS85)
 ```
 
 ただsectorがconstのときの女性がゼロなので表記がおかしくなっている.
@@ -152,13 +155,13 @@ gf_bar(~sector,fill=~sex,position = "dodge",data=CPS85)
 
 オプション `position = "dodge"` に変更することで, それぞれの部門の比率が表示される．
 ```{r}
-gf_bar(~sector,fill=~sex,position = "fill",data=CPS85)
+gf_bar(~sector, fill = ~sex, position = "fill", data = CPS85)
 ```
 
 
 別々のパネルで表すには以下を実行するればよい.
 ```{r}
-gf_barh(~sector|sex,fill=~sex,data=CPS85)
+gf_bar(~ sector | sex, fill = ~sex, data = CPS85)
 ```
 
 ## 数量変数
@@ -172,7 +175,7 @@ $$
 $$
 は以下で計算できる.
 ```{r}
-mean(~wage,data=CPS85)
+mean(~wage, data = CPS85)
 ```
 標本分散
 $$
@@ -180,16 +183,16 @@ s_ｘ^2=\frac{1}{N-1}\sum_{n=1}^N (x_n-\bar{x})^2
 $$
 は以下で計算できる.
 ```{r}
-var(~wage,data=CPS85)
+var(~wage, data = CPS85)
 ```
 その平方根である標準偏差 $s_x$ は以下で計算できる.
 ```{r}
-sd(~wage,data=CPS85)
+sd(~wage, data = CPS85)
 ```
 
 これらを含めた特性値は `favstats` でまとめて表記できる.
 ```{r}
-favstats(~wage,data=CPS85)
+favstats(~wage, data = CPS85)
 ```
 ここで min は最小値を意味し, max は最大値を意味し, n は観測数を意味する.
 また median は中央値を意味し, データを大きい順にならべて真ん中に来る値である.
@@ -200,32 +203,32 @@ Q4 は第 3 四分位点であり, 75%に来る値である.
 
 対数変換した変数だと中央値と平均値がほぼ同じで偏りがないことが示唆される.
 ```{r}
-favstats(~log(wage),data=CPS85)
+favstats(~ log(wage), data = CPS85)
 ```
 
 ### 作図
 数量変数の作図はヒストグラムが代表的である.
 ```{r}
-gf_histogram(~wage,data=CPS85)
+gf_histogram(~wage, data = CPS85)
 ```
 すこし左に偏っているので対数変換したデータを考える.
 ```{r}
-gf_histogram(~log(wage),data=CPS85)
+gf_histogram(~ log(wage), data = CPS85)
 ```
 
 オプション  `binwidth` を用いて幅を調節できる.
 ```{r}
-gf_histogram(~log(wage), binwidth = 0.5, data=CPS85)
+gf_histogram(~ log(wage), binwidth = 0.5, data = CPS85)
 ```
 
 縦軸を密度に置き換えるには `gf_dhistogram` を用いる.
 ```{r}
-gf_dhistogram(~log(wage),data=CPS85)
+gf_dhistogram(~ log(wage), data = CPS85)
 ```
 
 密度図にするには `gf_density` を用いる.
 ```{r}
-gf_density(~log(wage), data=CPS85)
+gf_density(~ log(wage), data = CPS85)
 ```
 
 ### 数量変数とカテゴリカル変数
@@ -234,44 +237,44 @@ gf_density(~log(wage), data=CPS85)
 後者は性別を示すカテゴリカル変数である.
 カテゴリカル変数ごとの数量変数の結果は以下を実施すればよい.
 ```{r}
-favstats(log(wage)~sex,data=CPS85)
+favstats(log(wage) ~ sex, data = CPS85)
 ```
 
 これは以下でも同じ結果になる.
 ```{r}
-favstats(~log(wage)|sex,data=CPS85)
+favstats(~ log(wage) | sex, data = CPS85)
 ```
 
 ヒストグラムによる作図は以下である. 
 ```{r}
-gf_histogram(~log(wage),fill=~sex,data=CPS85)
+gf_histogram(~ log(wage), fill = ~sex, data = CPS85)
 ```
 
 色別に積み上がっている.
 
 別々のパネルで描くと以下になる.
 ```{r}
-gf_histogram(~log(wage)|sex,fill=~sex,data=CPS85)
+gf_histogram(~ log(wage) | sex, fill = ~sex, data = CPS85)
 ```
 
 密度図による作図は以下である. 重ねるためにオプション `alpha=0.5` をつけている．
 ```{r}
-gf_density(~log(wage),fill=~sex,alpha=0.5, data=CPS85)
+gf_density(~ log(wage), fill = ~sex, alpha = 0.5, data = CPS85)
 ```
 
 つみ上げるにはオプション `position = "stack"` をつける必要がある.
 ```{r}
-gf_density(~log(wage),fill=~sex, position = "stack", data=CPS85)
+gf_density(~ log(wage), fill = ~sex, position = "stack", data = CPS85)
 ```
 
 別々のパネルで描くと以下になる.
 ```{r}
-gf_density(~log(wage)|sex,fill=~sex, data=CPS85)
+gf_density(~ log(wage) | sex, fill = ~sex, data = CPS85)
 ```
 
 他にも箱ひげ図でも表せる.
 ```{r}  
-gf_boxplot(log(wage)~sex,fill=~sex,data=CPS85)
+gf_boxplot(log(wage) ~ sex, fill = ~sex, data = CPS85)
 ```
 
 箱ひげ図の箱は第 1 四分位点と第 3 四分位点で構成され,
@@ -284,15 +287,15 @@ gf_boxplot(log(wage)~sex,fill=~sex,data=CPS85)
 
 点の散らばりも加えるためには `gf_dotplot` を実施する.
 ```{r}
-gf_boxplot(log(wage)~sex,fill=~sex,data=CPS85,outlier.color = NA) %>%
-  gf_dotplot(binaxis = "y",stackdir="center",alpha=0.5,binwidth = 0.1)
+gf_boxplot(log(wage) ~ sex, fill = ~sex, data = CPS85, outlier.color = NA) %>%
+  gf_dotplot(binaxis = "y", stackdir = "center", alpha = 0.5, binwidth = 0.1)
 ```
 外れ値が二重にならないように最初のオプションに`outlier.color = NA` を加える.
 
 
 セクターごとの箱ひげ図も可能である.
 ```{r}
-gf_boxplot(log(wage)~sex|sector,fill=~sex,data=CPS85)
+gf_boxplot(log(wage) ~ sex | sector, fill = ~sex, data = CPS85)
 ```
 
 
@@ -310,7 +313,7 @@ $$
 
 これは `R` において `cov` で計算できる.
 ```{r}
-cov(wage~educ,data=CPS85)
+cov(wage ~ educ, data = CPS85)
 # cov(CPS$wage~CPS$educ)
 ```
 で計算できる. 
@@ -323,19 +326,19 @@ $$
 
 これは `R` において `cor` で計算できる.
 ```{r}
-cor(wage~educ,data=CPS85)
+cor(wage ~ educ, data = CPS85)
 # cor(CPS85$wage,CPS85$educ)
 ```
 
 2 つのデータは散布図で表すことができる.
 ```{r}
-gf_point(log(wage)~educ,data=CPS85)
+gf_point(log(wage) ~ educ, data = CPS85)
 ```
 
 `sex` を性別を示すカテゴリカルデータとする.
 カテゴリカル・データごとの散布図はパネルごとなら以下によって実行される.
 ```{r}
-gf_point(log(wage)~educ,color=~sex,alpha=0.5,data=CPS85)
+gf_point(log(wage) ~ educ, color = ~sex, alpha = 0.5, data = CPS85)
 ```
 
 データが重なっているため, `alpha=0.5` と半透明としているが, それでも上手く表示されていない.
@@ -343,39 +346,47 @@ gf_point(log(wage)~educ,color=~sex,alpha=0.5,data=CPS85)
 
 別々のパネルで表示するなら以下を実行する.
 ```{r}
-gf_point(log(wage)~educ|sex,color=~sex,alpha-0.5,data=CPS85)
+gf_point(log(wage) ~ educ | sex, color = ~sex, alpha - 0.5, data = CPS85)
 ```
 
 `exper` を経験年数を示す数量データとする. 
 3 つの共分散は次のように実行する.
 ```{r}
-#cov(CPS85[c("wage","educ","exper")])
-CPS85 %>% select(wage,educ,exper) %>% cov()
+# cov(CPS85[c("wage","educ","exper")])
+CPS85 %>%
+  select(wage, educ, exper) %>%
+  cov()
 ```
 対角要素は分散である.
 
 3 つの相関係数は次のように実行する.
 ```{r}
-#cor(CPS85[c("wage","educ","exper")])
-CPS85 %>% select(wage,educ,exper) %>% cor()
+# cor(CPS85[c("wage","educ","exper")])
+CPS85 %>%
+  select(wage, educ, exper) %>%
+  cor()
 ```
 
 それを図示するには `lattice` パッケージの `splom` を使えばよい.
 ```{r}
-#splom(CPS85[c("wage","educ","exper")])
-CPS85 %>% select(wage,educ,exper) %>% splom()
+# splom(CPS85[c("wage","educ","exper")])
+CPS85 %>%
+  select(wage, educ, exper) %>%
+  splom()
 ```
 
 なお, 一つの要素を対数変換するには以下を実行する. 
 ```{r}
-#splom(data.frame(log(CPS85$wage),CPS85$educ, CPS85$exper))
-CPS85 %>% mutate(lwage = log(wage)) %>% 
-  select(lwage,educ,exper) %>% splom()
+# splom(data.frame(log(CPS85$wage),CPS85$educ, CPS85$exper))
+CPS85 %>%
+  mutate(lwage = log(wage)) %>%
+  select(lwage, educ, exper) %>%
+  splom()
 ```
 
 3 変数の散布図は`lattice` パッケージの `cloud` で実行できる.
 ```{r}
-cloud(log(wage)~educ+exper,data=CPS85)
+cloud(log(wage) ~ educ + exper, data = CPS85)
 ```
 
 ただ非常に見づらい.

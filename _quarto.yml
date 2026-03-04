@@ -6,7 +6,7 @@ lang: ja
 
 book:
   title: "Rによる統計分析"
-  output-file: book_filename
+  output-file: output
   author: "宮﨑憲治 (Kenji Miyazaki)"
   date: today
   chapters:
@@ -39,18 +39,18 @@ format:
       opts_chunk:
         dev: "png"
 
-  pdf:
-    pdf-engine: lualatex
-    documentclass: ltjreport
-    classoption: [lualatex, ja=standard]
-    fig-align: "center"
-    include-in-header:
-      - preamble.tex
-    # include-after-body:
-    #   - afterbody.tex
-    knitr:
-      opts_chunk:
-        dev: "png"
+  # pdf:
+  #   pdf-engine: lualatex
+  #   documentclass: ltjreport
+  #   classoption: [lualatex, ja=standard]
+  #   fig-align: "center"
+  #   include-in-header:
+  #     - preamble.tex
+  #   # include-after-body:
+  #   #   - afterbody.tex
+  #   knitr:
+  #     opts_chunk:
+  #       dev: "png"
 
 execute:
   echo: true
